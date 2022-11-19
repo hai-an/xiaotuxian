@@ -6,7 +6,9 @@
     "moduleResolution": "node",
     "paths": {
       "@/*": [
-        "src/*"
+        // "src/*"
+        // 当我们使用路径别名@的时候可以提示路径。
+        "./src/*"
       ]
     },
     "lib": [
@@ -16,4 +18,15 @@
       "scripthost"
     ]
   }
+  ,
+  "exclude": ["node_modules", "dist"]
 }
+// {
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["./src/*"],
+//     }
+//   },
+//   "exclude": ["node_modules", "dist"]
+// }
