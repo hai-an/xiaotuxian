@@ -1,5 +1,5 @@
 <template>
-  <div class='xtx-home-page'>
+  <div class='xtx-home-page container'>
     首页
   </div>
 </template>
