@@ -1,11 +1,4 @@
 <template>
-  <nav>
-  App {{$store.state.user.profile.nickname}}<button @click="$store.commit('user/setUser',{nickname:'Vue3'})">点击姓名</button>
-  </nav>
+  <!-- 一级路由界面 -->
+  <router-view />
 </template>
-<script>
-// import {  } from "vuex";
-</script>
-<style lang="less">
-
-</style>
