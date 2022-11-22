@@ -13,21 +13,29 @@
 
 <script>
 import AppHeaderNav from './app-header-nav'
-import { onMounted, ref } from 'vue'
+// 1.传统方式 设置滚动距离
+// import { onMounted, ref } from 'vue'
+// 2.使用插件 设置滚动距离
+import { useWindowScroll } from '@vueuse/core'
 export default {
   name: 'AppHeaderSticky',
   components: { AppHeaderNav },
-  setup () {
-    // 监听滚动距离
-    const y = ref(0)
+  // 传统方式 设置滚动距离
+  // setup () {
+  //   // 监听滚动距离
+  //   const y = ref(0)
 
-    onMounted(() => {
-      window.onscroll = () => {
-        const scrollTop = document.documentElement.scrollTop
-        // console.log(scrollTop)
-        y.value = scrollTop
-      }
-    })
+  //   onMounted(() => {
+  //     window.onscroll = () => {
+  //       const scrollTop = document.documentElement.scrollTop
+  //       // console.log(scrollTop)
+  //       y.value = scrollTop
+  //     }
+  //   })
+  //   return { y }
+  // }
+  setup () {
+    const { y } = useWindowScroll() // 使用插件获取 页面y轴滚动距离
     return { y }
   }
 }
