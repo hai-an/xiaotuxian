@@ -14,6 +14,12 @@
             {{sub.name}}
           </RouterLink>
         </template>
+        <!-- 骨架组件 start -->
+        <template v-else>
+          <XtxSkeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)" />
+          <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" />
+        </template>
+        <!-- 骨架组件 end -->
       </li>
     </ul>
      <!-- 弹层 -->
@@ -124,6 +130,7 @@ export default {
     }
   }
 }
+// 弹层样式
 .layer {
     width: 990px;
     height: 500px;
@@ -215,4 +222,16 @@ export default {
       display: block;
     }
   }
+  // 骨架动画样式
+  .xtx-skeleton {
+  animation: fade 1s linear infinite alternate;
+}
+@keyframes fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
 </style>
