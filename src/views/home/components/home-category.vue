@@ -1,8 +1,9 @@
 <template>
-  <div class='home-category'>
+  <div class='home-category' @mouseleave="categoryId=null">
+    <!-- 左侧菜单栏 -->
     <ul class="menu">
       <!-- 定义一个数据记录当前鼠标经过分类的ID，使用计算属性得到当前的分类推荐商品数据 -->
-      <li v-for="item in menuList" :key="item.id" @mouseenter="categoryId=item.id">
+      <li :class="{active:categoryId===item.id}" v-for="item in menuList" :key="item.id" @mouseenter="categoryId=item.id" >
         <RouterLink :to="`/category/${item.id}`">{{item.name}}</RouterLink>
         <template v-if="item.children">
           <RouterLink
@@ -15,10 +16,10 @@
         </template>
       </li>
     </ul>
-  </div>
-    <!-- 弹层 -->
+     <!-- 弹层 -->
     <div class="layer">
-      <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <h4 v-if="currCategory">{{currCategory.id==='brand'?'品牌':'分类'}}推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+    <!-- 商品推荐 -->
       <ul v-if="currCategory && currCategory.goods && currCategory.goods.length">
         <li v-for="item in currCategory.goods" :key="item.id">
           <RouterLink :to="`/category/sub/${item.id}`">
@@ -31,13 +32,28 @@
           </RouterLink>
         </li>
       </ul>
+    <!-- 品牌推荐 -->
+      <ul v-if="currCategory && currCategory.brands && currCategory.brands.length">
+        <li class="brand" v-for="item in currCategory.brands" :key="item.id">
+          <RouterLink :to="`/category/sub/${item.id}`">
+            <img :src="item.picture" alt="">
+            <div class="info">
+              <p class="place"><i class="iconfont icon-dingwei"></i>{{item.place}}</p>
+              <p class="name ellipsis">{{item.name}}</p>
+              <p class="desc ellipsis-2">{{item.desc}}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
+  </div>
+
 </template>
 
 <script>
 import { useStore } from 'vuex'
 import { reactive, computed, ref } from 'vue'
-
+import { findBrand } from '@/api/home'
 export default {
   name: 'HomeCategory',
   // 1. 获取vuex的一级分类，并且只需要两个二级分类
@@ -48,7 +64,8 @@ export default {
     const brand = reactive({
       id: 'brand',
       name: '品牌',
-      children: [{ id: 'brand-chilren', name: '品牌推荐' }]
+      children: [{ id: 'brand-chilren', name: '品牌推荐' }],
+      brands: []
     })
 
     const store = useStore()
@@ -67,10 +84,15 @@ export default {
     })
 
     // --------------------------------------------
-    // 获取弹层 分类商品数据
+    // 获取弹层 分类商品推荐 数据
     const categoryId = ref(null)
     const currCategory = computed(() => {
       return menuList.value.find(item => item.id === categoryId.value)
+    })
+
+    // 获取 弹层 分类品牌推荐 数据 添加到 brand.brands
+    findBrand().then(data => {
+      brand.brands = data.result
     })
     return { menuList, categoryId, currCategory }
   }
@@ -140,9 +162,9 @@ export default {
           height: 100%;
           align-items: center;
           padding: 10px;
-          &:hover {
-            background: #e3f9f4;
-          }
+          &:hover,&.active {
+        background: @xtxColor;
+      }
           img {
               width: 95px;
               height: 95px;
@@ -164,6 +186,24 @@ export default {
               i {
                 font-size: 16px;
               }
+            }
+          }
+        }
+      }
+      li.brand {
+        height: 180px;
+        a {
+          align-items: flex-start;
+          img {
+            width: 120px;
+            height: 160px;
+          }
+          .info {
+            p {
+              margin-top: 8px;
+            }
+            .place {
+              color: #999;
             }
           }
         }
