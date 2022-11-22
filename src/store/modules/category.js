@@ -16,12 +16,31 @@ export default {
     // 修改分类数据
     setList (state, payload) {
       state.list = payload
+    },
+    // 定义 控制弹窗隐藏与显示的函数 需要 state数据 和 目标id
+    show (state, item) {
+      // state.list.forEach((id) => {
+      //   if (id === id) {
+      //     item.open = true
+      //     return true
+      //   }
+      // })
+      const category = state.list.find(category => category.id === item.id)
+      category.open = true
+    },
+    hide (state, item) {
+      const category = state.list.find(category => category.id === item.id)
+      category.open = false
     }
   },
   actions: {
     // 获取分类数据
     async getList ({ commit }) {
       const { result } = await findAllCategory()
+      // 给每个一级项 添加 open 控制弹窗隐藏
+      result.forEach(top => {
+        top.open = false // 默认隐藏
+      })
       commit('setList', result) // 获取数据成功，提交mutations进行数据修改
     }
   }
