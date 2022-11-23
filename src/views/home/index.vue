@@ -1,11 +1,13 @@
 <template>
-  <div class="page-home">
+  <div class="home-page">
     <!-- 首页入口 -->
     <div class="home-entry">
       <!-- 页面版心 -->
       <div class="container">
         <!-- 左侧分类 -->
         <HomeCategory />
+        <!-- 轮播图 -->
+        <HomeBanner />
       </div>
     </div>
   </div>
@@ -15,9 +17,10 @@
 // import { useStore } from 'vuex'
 // import { reactive, computed } from 'vue'
 import HomeCategory from './components/home-category'
+import HomeBanner from './components/home-banner'
 export default {
-  name: 'PageHome',
-  components: { HomeCategory }
+  name: 'HomePage',
+  components: { HomeCategory, HomeBanner }
   // setup () {
   //   // 1. 获取vuex的一级分类，并且只需要两个二级分类
   // // 2. 需要在组件内部，定义一个品牌数据
