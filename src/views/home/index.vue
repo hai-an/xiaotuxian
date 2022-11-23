@@ -9,9 +9,11 @@
         <!-- 轮播图 -->
         <HomeBanner />
         <!-- 新鲜好物 -->
-        <HomeNew/>
+        <HomeNew />
         <!-- 人气推荐 -->
-        <HomeHot/>
+        <HomeHot />
+        <!-- 热门品牌 -->
+        <HomeBrand />
       </div>
     </div>
   </div>
@@ -24,9 +26,10 @@ import HomeCategory from './components/home-category'
 import HomeBanner from './components/home-banner'
 import HomeNew from './components/home-new.vue'
 import HomeHot from './components/home-hot.vue'
+import HomeBrand from './components/home-brand.vue'
 export default {
   name: 'HomePage',
-  components: { HomeCategory, HomeBanner, HomeNew, HomeHot }
+  components: { HomeCategory, HomeBanner, HomeNew, HomeHot, HomeBrand }
   // setup () {
   //   // 1. 获取vuex的一级分类，并且只需要两个二级分类
   // // 2. 需要在组件内部，定义一个品牌数据
