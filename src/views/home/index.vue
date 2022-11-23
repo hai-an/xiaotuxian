@@ -16,6 +16,8 @@
         <HomeBrand />
         <!-- 商品区块 -->
         <HomeProduct  />
+        <!-- 最新专题 -->
+        <HomeSpecial  />
       </div>
     </div>
   </div>
@@ -30,9 +32,10 @@ import HomeNew from './components/home-new.vue'
 import HomeHot from './components/home-hot.vue'
 import HomeBrand from './components/home-brand.vue'
 import HomeProduct from './components/home-product.vue'
+import HomeSpecial from './components/home-special.vue'
 export default {
   name: 'HomePage',
-  components: { HomeCategory, HomeBanner, HomeNew, HomeHot, HomeBrand, HomeProduct }
+  components: { HomeCategory, HomeBanner, HomeNew, HomeHot, HomeBrand, HomeProduct, HomeSpecial }
   // setup () {
   //   // 1. 获取vuex的一级分类，并且只需要两个二级分类
   // // 2. 需要在组件内部，定义一个品牌数据
