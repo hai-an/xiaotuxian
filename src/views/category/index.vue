@@ -4,7 +4,9 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem>{{topCategory.name}}</XtxBreadItem>
+        <transition name="fade-right" mode="out-out">
+          <XtxBreadItem :key="topCategory.id">{{topCategory.name}}</XtxBreadItem>
+        </transition>
       </XtxBread>
       <!-- 轮播图 -->
       <XtxCarousel :sliders="sliders" style="height:500px" />
@@ -30,6 +32,7 @@
         <div class="body">
           <GoodsItem v-for="sub in item.goods" :key="sub.id" :goods="sub" />
         </div>
+
       </div>
     </div>
   </div>
@@ -75,7 +78,7 @@ export default {
     }
     watch(() => route.params.id, (newVal) => {
       newVal && getSubList()
-    })
+    }, { immediate: true })
     return { sliders, topCategory, subList }
   }
 }
