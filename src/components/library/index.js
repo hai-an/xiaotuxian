@@ -2,18 +2,24 @@
 // 这就是插件
 // vue2.0 插件写法要素: 导出一个对象,有install函数,默认传入了vue构造函数,vue基础之上扩展
 // vue3.0 插件写法要素: 导出一个对象,有install函数,默认传入了app应用实例,app基础之上扩展
+import defaultImg from '@/assets/images/200.png' // 导入加载失败的默认图片
 import XtxSkeleton from './xtx-skeleton.vue'
 import XtxCarousel from './xtx-carousel.vue'
 import XtxMore from './xtx-more.vue'
-import defaultImg from '@/assets/images/200.png' // 导入加载失败的默认图片
+import XtxBread from './xtx-bread.vue'
+import XtxBreadItem from './xtx-bread-item.vue'
 export default {
   install (app) {
     // 在app上进行扩展,app提供 component directive 函数
     // 如果要挂载原型 app.config.globalProperties  方式
-    app.component(XtxSkeleton.name, XtxSkeleton)
-    app.component(XtxCarousel.name, XtxCarousel)
-    app.component(XtxMore.name, XtxMore)
-    defineDirective(app)
+    app.component(XtxSkeleton.name, XtxSkeleton) // 全局注册 骨架组件
+    app.component(XtxCarousel.name, XtxCarousel) // 全局注册 轮播图组件
+    app.component(XtxMore.name, XtxMore) // 全局注册 更多分类组件
+    app.component(XtxBread.name, XtxBread) // 全局注册 面包屑组件
+    app.component(XtxBreadItem.name, XtxBreadItem) // 全局注册 面包屑组件
+
+    // 自定义指令
+    defineDirective(app) // 全局注册 图片懒加载指令
   }
 }
 const defineDirective = (app) => {
