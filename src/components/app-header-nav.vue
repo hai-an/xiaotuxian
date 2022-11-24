@@ -29,7 +29,7 @@ import { computed } from 'vue'
 export default {
   name: 'AppHeaderNav',
   setup (props, what) {
-    console.log('what', what)
+    // console.log('what', what)
     // 使用 vuex 获取分类导航数据
     // 调用 获取分类导航数据方法
     const store = useStore()
@@ -38,7 +38,7 @@ export default {
     })
     console.log(CategoryList)
     const show = (item) => {
-      console.log(item)
+      // console.log(item)
       return store.commit('category/show', item)
     }
     const hide = (item) => {

@@ -49,7 +49,7 @@ const defineDirective = (app) => {
       const observe = new IntersectionObserver(([{ isIntersecting }]) => {
         if (isIntersecting) {
           // 进入可视区, 调用 停止观察 的方法
-          console.log('进入可视区', binding, el)
+          // console.log('进入可视区', binding, el)
 
           observe.unobserve(el)
           // 4.处理图片加载失败 error 图片加载失败的事件 load 图片加载成功

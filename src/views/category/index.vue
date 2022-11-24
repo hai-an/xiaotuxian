@@ -4,7 +4,7 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <transition name="fade-right" mode="out-out">
+        <transition name="fade-right" mode="out-in">
           <XtxBreadItem :key="topCategory.id">{{topCategory.name}}</XtxBreadItem>
         </transition>
       </XtxBread>
@@ -58,6 +58,7 @@ export default {
     // 面包屑+所有分类
     const store = useStore()
     const route = useRoute()
+    console.log('route', route)
     const topCategory = computed(() => {
       let cate = {}
       const item = store.state.category.list.find(item => {
@@ -78,7 +79,6 @@ export default {
     }
     watch(() => route.params.id, (newVal) => {
       // newVal && getSubList()
-      console.log('route', route)
       if (newVal && `/category/${newVal}` === route.path) getSubList()
     }, { immediate: true })
     return { sliders, topCategory, subList }
