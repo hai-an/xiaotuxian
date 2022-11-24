@@ -3,20 +3,34 @@
 // vue2.0 插件写法要素: 导出一个对象,有install函数,默认传入了vue构造函数,vue基础之上扩展
 // vue3.0 插件写法要素: 导出一个对象,有install函数,默认传入了app应用实例,app基础之上扩展
 import defaultImg from '@/assets/images/200.png' // 导入加载失败的默认图片
-import XtxSkeleton from './xtx-skeleton.vue'
-import XtxCarousel from './xtx-carousel.vue'
-import XtxMore from './xtx-more.vue'
-import XtxBread from './xtx-bread.vue'
-import XtxBreadItem from './xtx-bread-item.vue'
+// import XtxSkeleton from './xtx-skeleton.vue'
+// import XtxCarousel from './xtx-carousel.vue'
+// import XtxMore from './xtx-more.vue'
+// import XtxBread from './xtx-bread.vue'
+// import XtxBreadItem from './xtx-bread-item.vue'
+
+// 导入library文件夹下的所有组件
+// 批量导入需要使用一个函数 require.context(dir,deep,matching) // 它又一个属性 keys() 获取所有的文件路径
+// 参数：1. 目录  2. 是否加载子目录  3. 加载的正则匹配
+const importFn = require.context('./', false, /\.vue$/)
 export default {
   install (app) {
     // 在app上进行扩展,app提供 component directive 函数
     // 如果要挂载原型 app.config.globalProperties  方式
-    app.component(XtxSkeleton.name, XtxSkeleton) // 全局注册 骨架组件
-    app.component(XtxCarousel.name, XtxCarousel) // 全局注册 轮播图组件
-    app.component(XtxMore.name, XtxMore) // 全局注册 更多分类组件
-    app.component(XtxBread.name, XtxBread) // 全局注册 面包屑组件
-    app.component(XtxBreadItem.name, XtxBreadItem) // 全局注册 面包屑组件
+    // app.component(XtxSkeleton.name, XtxSkeleton) // 全局注册 骨架组件
+    // app.component(XtxCarousel.name, XtxCarousel) // 全局注册 轮播图组件
+    // app.component(XtxMore.name, XtxMore) // 全局注册 更多分类组件
+    // app.component(XtxBread.name, XtxBread) // 全局注册 面包屑组件
+    // app.component(XtxBreadItem.name, XtxBreadItem) // 全局注册 面包屑组件
+
+    // console.dir(importFn.keys()) 文件名称数组
+    importFn.keys().forEach(item => {
+      // console.log('item', item)  // item 拿到的是 文件路径
+      // 获取组件对象
+      const component = importFn(item).default
+      // 注册组件
+      app.component(item.name, component)
+    })
 
     // 自定义指令
     defineDirective(app) // 全局注册 图片懒加载指令
@@ -32,12 +46,12 @@ const defineDirective = (app) => {
       // 2.创建一个观察对象,来观察当前使用的指令元素
       console.log('IntersectionObserver', IntersectionObserver)
 
-      const observer = new IntersectionObserver(([{ isIntersecting }]) => {
+      const observe = new IntersectionObserver(([{ isIntersecting }]) => {
         if (isIntersecting) {
           // 进入可视区, 调用 停止观察 的方法
           console.log('进入可视区', binding, el)
 
-          observer.unobserve(el)
+          observe.unobserve(el)
           // 4.处理图片加载失败 error 图片加载失败的事件 load 图片加载成功
           el.onerror = () => {
             // 加载失败,设置默认图片
@@ -51,7 +65,7 @@ const defineDirective = (app) => {
         threshold: 0.01
       })
       // 开启观察
-      observer.observe(el)
+      observe.observe(el)
     }
   })
 }
