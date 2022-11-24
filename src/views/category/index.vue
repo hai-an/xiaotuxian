@@ -20,7 +20,17 @@
           </li>
         </ul>
       </div>
-      <!-- 不同分类商品 -->
+      <!-- 分类关联商品 -->
+      <div class="ref-goods" v-for="item in subList" :key="item.id">
+        <div class="head">
+          <h3>- {{item.name}} -</h3>
+          <p class="tag">{{item.desc}}</p>
+          <XtxMore  :path="`/category/sub/${item.id}`" />
+        </div>
+        <div class="body">
+          <GoodsItem v-for="sub in item.goods" :key="sub.id" :goods="sub" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -28,9 +38,13 @@
 import { findBanner } from '@/api/home'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import GoodsItem from './components/goods-item'
+import { findTopCategory } from '@/api/category'
+
 export default {
   name: 'TopCategory',
+  components: { GoodsItem },
   setup () {
     // 轮播图
     const sliders = ref([])
@@ -50,7 +64,19 @@ export default {
       return cate
     })
     console.log(route.params.id)
-    return { sliders, topCategory }
+
+    // 推荐商品
+    const subList = ref([])
+    // 定义一个获取 api函数 , watch 监听 route.params.id 的改变,触发 该 api函数
+    const getSubList = () => {
+      findTopCategory(route.params.id).then(data => {
+        subList.value = data.result.children
+      })
+    }
+    watch(() => route.params.id, (newVal) => {
+      newVal && getSubList()
+    })
+    return { sliders, topCategory, subList }
   }
 }
 </script>
@@ -89,6 +115,32 @@ export default {
           }
         }
       }
+    }
+  }
+  // 分类商品
+  .ref-goods {
+    background-color: #fff;
+    margin-top: 20px;
+    position: relative;
+    .head {
+      .xtx-more {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+      .tag {
+        text-align: center;
+        color: #999;
+        font-size: 20px;
+        position: relative;
+        top: -20px;
+      }
+    }
+    .body {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      padding: 0 65px 30px;
     }
   }
 }
