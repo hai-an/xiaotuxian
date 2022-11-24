@@ -23,13 +23,13 @@ export default {
     // app.component(XtxBread.name, XtxBread) // 全局注册 面包屑组件
     // app.component(XtxBreadItem.name, XtxBreadItem) // 全局注册 面包屑组件
 
-    // console.dir(importFn.keys()) 文件名称数组
-    importFn.keys().forEach(item => {
-      // console.log('item', item)  // item 拿到的是 文件路径
+    console.dir(importFn.keys()) // 文件名称数组
+    importFn.keys().forEach(key => {
+      // console.log('key', key)  // key 拿到的是 文件路径
       // 获取组件对象
-      const component = importFn(item).default
+      const component = importFn(key).default
       // 注册组件
-      app.component(item.name, component)
+      app.component(component.name, component)
     })
 
     // 自定义指令
