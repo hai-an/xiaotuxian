@@ -5,7 +5,7 @@
     <!-- 2.鼠标点击 一级分类标题 弹窗关闭 -->
     <!-- 3.鼠标点击 二级分类标题 弹窗关闭 -->
     <!-- 4.鼠标离开 一级,二级分类标题 弹窗关闭 -->
-    <li v-for="item in CategoryList" :key="item.id" @mouseenter="show(item)" @mouseleave="hide(item)">
+    <li v-for="item in CategoryList" :key="item.id" @mousemove="show(item)" @mouseleave="hide(item)">
       <RouterLink :to="`/category/${item.id}`" @click="hide(item)">{{item.name}}</RouterLink>
       <div class="layer" :class="{open: item.open ? true : false}">
         <!-- 动态控制 layer.open 属性 -->
