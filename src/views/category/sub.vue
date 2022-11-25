@@ -5,7 +5,12 @@
       <SubBread />
       <!-- 商品筛选区 -->
       <SubFilter />
-      <xtx-checkbox v-model="checkAll">全选</xtx-checkbox>
+         <!-- 结果区域 -->
+      <div class="goods-list">
+        <!-- 排序 -->
+        <SubSort />
+        <!-- 列表 -->
+      </div>
     </div>
   </div>
 </template>
@@ -14,9 +19,10 @@
 import { ref } from 'vue-demi'
 import SubBread from './components/sub-bread.vue'
 import SubFilter from './components/sub-filter.vue'
+import SubSort from './components/sub-sort.vue'
 export default {
   name: 'SubCategory',
-  components: { SubBread, SubFilter },
+  components: { SubBread, SubFilter, SubSort },
   setup () {
     const checkAll = ref(true)
 
@@ -24,3 +30,11 @@ export default {
   }
 }
 </script>
+
+<style scoped lang='less'>
+.goods-list {
+  background: #fff;
+  padding: 0 25px;
+  margin-top: 25px;
+}
+</style>
