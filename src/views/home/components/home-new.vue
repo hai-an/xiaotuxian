@@ -8,7 +8,7 @@
          <!-- 面板内容 -->
           <ul class="goods-list" v-if="goods.length">
             <li v-for="item in goods" :key="item.id">
-              <RouterLink :to="`/produce/${item.id}`">
+              <RouterLink :to="`/product/${item.id}`">
                 <img v-lazy="item.picture" alt="">
                 <p class="name ellipsis">{{item.name}}</p>
                 <p class="price">&yen;{{item.price}}</p>
