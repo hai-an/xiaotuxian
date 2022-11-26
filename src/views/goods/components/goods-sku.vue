@@ -1,32 +1,39 @@
+<!-- eslint-disable no-return-assign -->
 <template>
   <div class="goods-sku">
-    <dl>
-      <dt>颜色</dt>
+    <dl v-for="item in goods.specs" :key="item.id">
+      <dt >{{item.name}}</dt>
       <dd>
-        <img class="selected" src="https://yanxuan-item.nosdn.127.net/d77c1f9347d06565a05e606bd4f949e0.png" alt="">
-        <img class="disabled" src="https://yanxuan-item.nosdn.127.net/d77c1f9347d06565a05e606bd4f949e0.png" alt="">
-      </dd>
-    </dl>
-    <dl>
-      <dt>尺寸</dt>
-      <dd>
-        <span class="disabled">10英寸</span>
-        <span class="selected">20英寸</span>
-        <span>30英寸</span>
-      </dd>
-    </dl>
-    <dl>
-      <dt>版本</dt>
-      <dd>
-        <span>美版</span>
-        <span>港版</span>
+        <template v-for="val in item.values" :key="val.name">
+        <img  @click="clickSpecs(item,val)" v-if="val.picture" :class="{selected:val.selected}" :src="val.picture" :title="val.name">
+        <span :class="{selected:val.selected}" @click="clickSpecs(item,val)" v-else>{{val.name}}</span>
+      </template>
       </dd>
     </dl>
   </div>
 </template>
 <script>
 export default {
-  name: 'GoodsSku'
+  name: 'GoodsSku',
+  props: {
+    goods: {
+      type: Object,
+      default: () => ({ specs: [], skus: [] })
+    }
+  },
+  setup (props) {
+    const clickSpecs = (item, val) => {
+      // 1.选中时,再次点击该选项,取消选中
+      // 2.当前项选中时,点击同一规格的其他 属性时,取消当前选中,给 点击目标 添加选中
+      if (val.selected) {
+        val.selected = false
+      } else {
+        item.values.forEach(p => { p.selected = false })
+        val.selected = true
+      }
+    }
+    return { clickSpecs }
+  }
 }
 </script>
 <style scoped lang="less">

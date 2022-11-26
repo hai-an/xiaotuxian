@@ -20,7 +20,7 @@
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
           <!-- 商品 sku -->
-          <GoodsSku></GoodsSku>
+          <GoodsSku :goods="goods"></GoodsSku>
         </div>
 
       </div>
