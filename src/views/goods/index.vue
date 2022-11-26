@@ -11,12 +11,15 @@
       </XtxBread>
       <!-- 商品信息 -->
       <div class="goods-info">
+        <!-- 左侧 商品图片区 -->
         <div class="media">
-          <!-- 左侧 商品图片区 -->
           <GoodsImage :images="goods.mainPictures"></GoodsImage>
-          <!-- 右侧 商品信息区 -->
+          <GoodsSales></GoodsSales>
         </div>
-        <div class="spec"></div>
+        <!-- 右侧 商品信息区 -->
+        <div class="spec">
+          <GoodsName :goods="goods"></GoodsName>
+        </div>
 
       </div>
       <!-- 商品推荐 -->
@@ -40,11 +43,13 @@
 import { findGoods } from '@/api/product'
 import GoodsRelevant from './components/goods-relevant'
 import GoodsImage from './components/goods-image.vue'
+import GoodsSales from './components/goods-sales.vue'
+import GoodsName from './components/goods-name.vue'
 import { ref, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
   setup () {
     const goods = useGoods()
     console.log('goods', goods)
