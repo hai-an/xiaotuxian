@@ -19,6 +19,8 @@
         <!-- 右侧 商品信息区 -->
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
+          <!-- 商品 sku -->
+          <GoodsSku></GoodsSku>
         </div>
 
       </div>
@@ -45,11 +47,12 @@ import GoodsRelevant from './components/goods-relevant'
 import GoodsImage from './components/goods-image.vue'
 import GoodsSales from './components/goods-sales.vue'
 import GoodsName from './components/goods-name.vue'
+import GoodsSku from './components/goods-sku.vue'
 import { ref, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
   setup () {
     const goods = useGoods()
     console.log('goods', goods)

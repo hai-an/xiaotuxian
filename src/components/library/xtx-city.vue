@@ -30,6 +30,9 @@ export default {
   setup (props, { emit }) {
     // 控制展开收起,默认收起
     const show = ref(false)
+    // 2. 显示和隐藏函数（为什么是函数，做更多事情）
+    const loading = ref(false)
+    const cityData = ref([])
     // 开启弹层
     const open = () => {
       show.value = true
@@ -79,11 +82,18 @@ export default {
         }
       })
     }
+    // 定义地区 基本数据
+    const changeResult = reactive({
+      provinceCode: '',
+      provinceName: '',
+      cityCode: '',
+      cityName: '',
+      countyCode: '',
+      countyName: '',
+      fullLocation: ''
+    })
     // 获取城市数据,显示当前地方列表
-    // 2. 显示和隐藏函数（为什么是函数，做更多事情）
-    const loading = ref(false)
-    const cityData = ref([])
-    // 定义计算属性
+    // 定义计算属性 实时更新 currentList 选中的地址
     const currentList = computed(() => {
       // TODO 根据点击的省份城市获取对应的列表
       let currlist = cityData.value
@@ -99,17 +109,9 @@ export default {
       }
       return currlist
     })
-    // 定义地区 基本数据
-    const changeResult = reactive({
-      provinceCode: '',
-      provinceName: '',
-      cityCode: '',
-      cityName: '',
-      countyCode: '',
-      countyName: '',
-      fullLocation: ''
-    })
-    // 监听点击 省市区
+
+    // 监听点击(事件) 省市区 时,
+    // 默认显示省份,当首次点击时, 赋值 code 和 name ,并且触发 watch 侦听事件,重新渲染 currentList拿到市级数组数据,第二次点击 拿到 code 和 name ,再重新渲染数组,得到 区级数组,  最后选择 区级,即可 关闭弹层,合并数据
     const changeItem = (item) => {
       // 省
       if (item.level === 0) {
