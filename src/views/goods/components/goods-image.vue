@@ -59,7 +59,6 @@ const usePreviewLargePicture = () => {
   watch([elementX, elementY, isOutside], () => {
     // 5.根据得到的数据设置样式和是否显示数据
     show.value = !isOutside.value // 预览 大图片
-    console.log('isOutside', elementX, elementY, isOutside)
     // 5.1 定义 公共数据模板
     const position = { x: 0, y: 0 }
     // 5.2 控制X轴方向的定位 0-200 之间
