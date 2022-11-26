@@ -1,12 +1,13 @@
 <template>
-  <div class='xtx-goods-page'>
+  <!-- 有 goods再创建组件 -->
+  <div class='xtx-goods-page' v-if="goods">
     <div class="container">
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem to="/">手机</XtxBreadItem>
-        <XtxBreadItem to="/">华为</XtxBreadItem>
-        <XtxBreadItem to="/">p30</XtxBreadItem>
+        <XtxBreadItem :to="`/category/${goods.categories[1].id}`">{{goods.categories[1].name}}</XtxBreadItem>
+        <XtxBreadItem :to="`/category/sub/${goods.categories[0].id}`">{{goods.categories[0].name}}</XtxBreadItem>
+        <XtxBreadItem>{{goods.name}}</XtxBreadItem>
       </XtxBread>
       <!-- 商品信息 -->
       <div class="goods-info"></div>
@@ -28,10 +29,38 @@
 </template>
 
 <script>
+import { findGoods } from '@/api/product'
 import GoodsRelevant from './components/goods-relevant'
+import { ref, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant }
+  components: { GoodsRelevant },
+  setup () {
+    const goods = useGoods()
+    console.log('goods', goods)
+    return { goods }
+  }
+}
+
+// 获取商品详情
+const useGoods = () => {
+  // 出现路由地址商品ID变化,但是不会重新初始化组件
+  const goods = ref(null)
+  const route = useRoute()
+  // 监听商品ID变化,即=> 路由id变化
+  watch(() => route.params.id, (newVal) => {
+    if (newVal && route.path === `/product/${newVal}`) {
+      findGoods(route.params.id).then(data => {
+        // 让商品的数据为 null 后,利用 v-if 重新销毁组件后,再重新创建组件
+        goods.value = null
+        nextTick(() => {
+          goods.value = data.result
+        })
+      })
+    }
+  }, { immediate: true })
+  return goods
 }
 </script>
 
