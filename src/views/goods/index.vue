@@ -10,7 +10,15 @@
         <XtxBreadItem>{{goods.name}}</XtxBreadItem>
       </XtxBread>
       <!-- 商品信息 -->
-      <div class="goods-info"></div>
+      <div class="goods-info">
+        <div class="media">
+          <!-- 左侧 商品图片区 -->
+          <GoodsImage :images="goods.mainPictures"></GoodsImage>
+          <!-- 右侧 商品信息区 -->
+        </div>
+        <div class="spec"></div>
+
+      </div>
       <!-- 商品推荐 -->
       <GoodsRelevant />
       <!-- 商品详情 -->
@@ -31,11 +39,12 @@
 <script>
 import { findGoods } from '@/api/product'
 import GoodsRelevant from './components/goods-relevant'
+import GoodsImage from './components/goods-image.vue'
 import { ref, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant },
+  components: { GoodsRelevant, GoodsImage },
   setup () {
     const goods = useGoods()
     console.log('goods', goods)
@@ -65,9 +74,20 @@ const useGoods = () => {
 </script>
 
 <style scoped lang='less'>
+  // 商品信息
 .goods-info {
   min-height: 600px;
   background: #fff;
+  display: flex;
+  .media {
+    width: 580px;
+    height: 600px;
+    padding: 30px 50px;
+  }
+  .spec {
+    flex: 1;
+    padding: 30px 30px 30px 0;
+  }
 }
 .goods-footer {
   display: flex;
