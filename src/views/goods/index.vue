@@ -19,8 +19,10 @@
         <!-- 右侧 商品信息区 -->
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
-          <!-- 商品 sku -->
+          <!-- 商品 sku组件 -->
           <GoodsSku :goods="goods" skuId="300078198" @change="changeSku"></GoodsSku>
+          <!-- 数量选中组件 -->
+          <XtxNumbox label="数量" v-model="num" :max="goods.inventory"></XtxNumbox>
         </div>
 
       </div>
@@ -58,13 +60,16 @@ export default {
     // console.log('goods', goods)
     const changeSku = sku => {
       console.log('sku', sku)
-      if (sku.skuId) { // 修改商品的现价原价库存信息
+      // 修改商品的现价原价库存信息
+      if (sku.skuId) {
         goods.value.price = sku.price
         goods.value.oldPrice = sku.oldPrice
         goods.value.inventory = sku.inventory
       }
     }
-    return { goods, changeSku }
+
+    const num = ref(1) // 选择数量
+    return { goods, changeSku, num }
   }
 }
 
