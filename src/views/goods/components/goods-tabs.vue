@@ -18,7 +18,7 @@
         :class="{ active: activeName === 'goods-comment' }"
         href="javascript:;"
         @click="clickTab('goods-comment')"
-        >商品评价<span>(500+)</span></a
+        >商品评价<span>({{goods.commentCount}})</span></a
       >
     </nav>
     <!-- 这个位置显示对应的组件 GoodsDetail 或者 GoodsComment -->
@@ -27,7 +27,7 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import GoodsDetail from './goods-detail'
 import GoodsComment from './goods-comment'
 export default {
@@ -39,7 +39,9 @@ export default {
     const clickTab = (name) => {
       activeName.value = name
     }
-    return { activeName, clickTab }
+    // 拿到父组件共享的数据
+    const goods = inject('goods')
+    return { activeName, clickTab, goods }
   }
 }
 </script>

@@ -57,7 +57,7 @@ import GoodsName from './components/goods-name.vue'
 import GoodsSku from './components/goods-sku.vue'
 import GoodsTabs from './components/goods-tabs'
 import GoodsHot from './components/goods-hot'
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, provide } from 'vue'
 import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
@@ -74,6 +74,8 @@ export default {
         goods.value.inventory = sku.inventory
       }
     }
+    // 共享给 后代 使用数据
+    provide('goods', goods)
 
     const num = ref(1) // 选择数量
     return { goods, changeSku, num }
