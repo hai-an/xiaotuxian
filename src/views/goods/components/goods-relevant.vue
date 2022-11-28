@@ -20,6 +20,9 @@ const useRelGoodsData = (id) => {
     const pageSize = 4
     const pageCount = Math.ceil(data.result.length / pageSize)
     for (let i = 0; i < pageCount; i++) {
+      // slice 从索引i截取,到索引e结束,返回截取的数组,不改变原数组 [] 左闭右闭
+      // pageCount 总页数 16页 每页4条 遍历4次 每次push [4条数据] 进去
+      // 首次 i为0 ,在result中截取 从索引为0开始截取,长度为4
       sliders.value.push(data.result.slice(i * pageSize, (i + 1) * pageSize))
     }
     console.log(sliders)
