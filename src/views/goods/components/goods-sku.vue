@@ -44,6 +44,8 @@ const getPathMap = (skus) => {
       })
     }
   })
+  console.log(pathMap)
+
   return pathMap
 }
 // 得到当前选中规格数组
@@ -71,16 +73,34 @@ const updateDisabledStatus = (specs, pathMap) => {
     })
   })
 }
+// 默认选中
+const inDefaultSelected = (goods, skuId) => {
+  // 1.找出sku的信息
+  // 2.遍历每一个按钮,按钮的值和 sku记录的值相同,就选中
+  const sku = goods.skus.find(sku => sku.id === skuId)
+  goods.specs.forEach((item, i) => {
+    const val = item.values.find(val => val.name === sku.specs[i].valueName)
+    val.selected = true
+  })
+}
 export default {
   name: 'GoodsSku',
   props: {
     goods: {
       type: Object,
       default: () => ({ specs: [], skus: [] })
+    },
+    skuId: {
+      type: String,
+      default: ''
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const pathMap = getPathMap(props.goods.skus)
+    // 初始化时  根据skuId,初始化默认选中
+    if (props.skuId) {
+      inDefaultSelected(props.goods, props.skuId)
+    }
     //  ☆ 组件初始化: 更新按钮禁用状态
     updateDisabledStatus(props.goods.specs, pathMap)
     const clickSpecs = (item, val) => {
@@ -96,9 +116,30 @@ export default {
       }
       // ☆ 点击按钮时,更新按钮禁用状态
       updateDisabledStatus(props.goods.specs, pathMap)
+      // 将你选择的sku信息通知父组件{skuId,price,oldPrice,inventory,specsText}
+      // 1.选择完整的sku组合按钮,才可以拿到这些信息,提知父组件
+      // 2.不是完整的sku组合按钮,提交对象父组件
+      const validSelectedValues = getSelectedArr(props.goods.specs).filter(v => v)
+      if (validSelectedValues.length === props.goods.specs.length) {
+        console.log('完整')
+        const skuIds = pathMap[validSelectedValues.join(spliter)]
+        console.log('skuIds', skuIds)
+        const sku = props.goods.skus.find(sku => sku.id === skuIds[0])
+        emit('change', {
+          skuId: sku.id,
+          price: sku.price,
+          oldPrice: sku.oldPrice,
+          inventory: sku.inventory,
+          // 属性名:属性名 属性值 属性名1 属性值1
+          specsText: sku.specs.reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, '').trim()
+        })
+        console.log(sku.specs.reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, ''))
+      } else {
+        console.log('不完整')
+        // 父组件需要判断是否规格选择完整,不完整不能加购物车
+        emit('change', {})
+      }
     }
-
-    console.log(pathMap)
     return { clickSpecs, pathMap }
   }
 }

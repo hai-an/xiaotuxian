@@ -20,7 +20,7 @@
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
           <!-- 商品 sku -->
-          <GoodsSku :goods="goods"></GoodsSku>
+          <GoodsSku :goods="goods" skuId="300078198" @change="changeSku"></GoodsSku>
         </div>
 
       </div>
@@ -55,8 +55,16 @@ export default {
   components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
   setup () {
     const goods = useGoods()
-    console.log('goods', goods)
-    return { goods }
+    // console.log('goods', goods)
+    const changeSku = sku => {
+      console.log('sku', sku)
+      if (sku.skuId) { // 修改商品的现价原价库存信息
+        goods.value.price = sku.price
+        goods.value.oldPrice = sku.oldPrice
+        goods.value.inventory = sku.inventory
+      }
+    }
+    return { goods, changeSku }
   }
 }
 
