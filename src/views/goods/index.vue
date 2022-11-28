@@ -23,6 +23,8 @@
           <GoodsSku :goods="goods" skuId="300078198" @change="changeSku"></GoodsSku>
           <!-- 数量选中组件 -->
           <XtxNumbox label="数量" v-model="num" :max="goods.inventory"></XtxNumbox>
+          <!-- 按钮 -->
+          <XtxButton type="primary" style="margin-top:20px;">加入购物车</XtxButton>
         </div>
 
       </div>
