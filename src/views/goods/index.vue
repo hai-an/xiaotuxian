@@ -36,7 +36,7 @@
           <!-- 商品+评价 -->
           <GoodsTabs :goods="goods" />
           <!-- 注意事项 -->
-          <div class="goods-warn"></div>
+          <GoodsWarn></GoodsWarn>
         </div>
         <!-- 24热榜+专题推荐 -->
         <div class="goods-aside">
@@ -57,11 +57,12 @@ import GoodsName from './components/goods-name.vue'
 import GoodsSku from './components/goods-sku.vue'
 import GoodsTabs from './components/goods-tabs'
 import GoodsHot from './components/goods-hot'
+import GoodsWarn from './components/goods-warn'
 import { ref, watch, nextTick, provide } from 'vue'
 import { useRoute } from 'vue-router'
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs, GoodsHot },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs, GoodsHot, GoodsWarn },
   setup () {
     const goods = useGoods()
     // console.log('goods', goods)
