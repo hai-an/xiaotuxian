@@ -32,10 +32,7 @@ export default {
     // 2.获取数据
     const goodsList = ref([])
     findHotGoods({ id: props.goodsId, type: props.type }).then(data => {
-      goodsList.value = data.result.map(item => {
-        item.tag = item.desc
-        return item
-      })
+      goodsList.value = data.result
     })
     return { title, goodsList }
   }
