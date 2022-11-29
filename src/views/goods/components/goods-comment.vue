@@ -20,17 +20,39 @@
     </div>
     <div class="sort" v-if="commentInfo">
       <span>排序：</span>
-      <a href="javascript:;" class="active">默认</a>
-      <a href="javascript:;">最新</a>
-      <a href="javascript:;">最热</a>
+      <a @click="changeSort(null)"
+      :class="{active: reqParams.sortField===null}" href="javascript:;" class="active">默认</a>
+      <a @click="changeSort('createTime')"
+      :class="{active: reqParams.sortField==='createTime'}" href="javascript:;">最新</a>
+      <a @click="changeSort('praiseCount')"
+      :class="{active: reqParams.sortField==='praiseCount'}" href="javascript:;">最热</a>
     </div>
     <!-- 评论列表 -->
-    <div class="list"></div>
+    <div class="list" v-if="commentList">
+      <div class="item" v-for="item in commentList" :key="item.id">
+        <div class="user">
+          <img :src="item.member.avatar" alt="">
+          <span>{{formatNickname(item.member.nickname)}}</span>
+        </div>
+        <div class="body">
+          <div class="score">
+            <i v-for="i in item.score" :key="i + 's'" class="iconfont icon-wjx01"></i>
+            <i v-for="i in 5-item.score" :key="i + 'k'" class="iconfont icon-wjx02"></i>
+            <span class="attr">{{formatSpecs(item.orderInfo.specs)}}</span>
+          </div>
+          <div class="text">{{item.content}}</div>
+          <div class="time">
+            <span>{{item.createTime}}</span>
+            <span class="zan"><i class="iconfont icon-dianzan"></i>{{item.praiseCount}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import { findCommentInfoByGoods } from '@/api/product'
-import { ref, inject } from 'vue'
+import { findCommentInfoByGoods, findGoodsCommentList } from '@/api/product'
+import { ref, inject, reactive, watch } from 'vue'
 export default {
   name: 'GoodsComment',
   setup () {
@@ -44,11 +66,58 @@ export default {
       commentInfo.value = data.result
       console.log(data.result)
     })
-    // 点击事件 获取目标索引 替换 当前索引
+    // 点击tag 获取目标索引 替换 当前索引
     const changeTag = (newIndex) => {
       currTagIndex.value = newIndex
+      // 点击tag时修改筛选条件
+      const tag = commentInfo.value.tags[newIndex]
+      // 情况1:全部评价 情况2:有图 情况3:正常tag
+      if (tag.type === 'all') {
+        reqParams.hasPicture = null
+        reqParams.tag = null
+      } else if (tag.type === 'img') {
+        reqParams.hasPicture = true
+        reqParams.tag = null
+      } else {
+        reqParams.hasPicture = null
+        reqParams.tag = tag.title
+      }
+      // 每次点击 其他 tag时,重置页码
+      reqParams.page = 1
     }
-    return { commentInfo, currTagIndex, changeTag }
+
+    // 准备筛选条件数据
+    const reqParams = reactive({
+      page: 1,
+      pageSize: 10,
+      hasPicture: null,
+      tag: null,
+      // 排序方式: praiseCount 热度 createTime 最新
+      sortField: null
+    })
+
+    // 初始化或者筛选条件改变后，获取列表数据。
+    const commentList = ref([])
+    // 第一个参数 不用深度监听 因为不是对象里包数组,或数组套数组
+    watch(reqParams, async () => {
+      const data = await findGoodsCommentList(goods.value.id, reqParams)
+      commentList.value = data.result.items // 赋值
+    }, { immediate: true })
+
+    // 点击排序
+    const changeSort = (sortField) => {
+      reqParams.sortField = sortField
+      // 重置页码1
+      reqParams.page = 1
+    }
+    // 定义过滤 函数
+    const formatSpecs = (spces) => {
+      return spces.reduce((p, c) => `${p} ${c.name}:${c.nameValue}`, '')
+    }
+    const formatNickname = (nickname) => {
+      return nickname.slice(0, 1) + '****' + nickname.slice(-1)
+    }
+    return { commentInfo, currTagIndex, changeTag, reqParams, commentList, changeSort, formatSpecs, formatNickname }
   }
 }
 </script>
@@ -129,6 +198,51 @@ export default {
       margin-left: 30px;
       &.active,&:hover {
         color: @xtxColor;
+      }
+    }
+  }
+  .list {
+    padding: 0 20px;
+    .item {
+      display: flex;
+      padding: 25px 10px;
+      border-bottom: 1px solid #f5f5f5;
+      .user {
+        width: 160px;
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+        }
+        span {
+          padding-left: 10px;
+          color: #666;
+        }
+      }
+      .body {
+        flex: 1;
+        .score {
+          line-height: 40px;
+          .iconfont {
+            color: #ff9240;
+            padding-right: 3px;
+          }
+          .attr {
+            padding-left: 10px;
+            color: #666;
+          }
+        }
+      }
+      .text {
+        color: #666;
+        line-height: 24px;
+      }
+      .time {
+        color: #999;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
       }
     }
   }
