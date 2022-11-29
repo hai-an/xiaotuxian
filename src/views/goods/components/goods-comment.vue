@@ -49,8 +49,9 @@
           </div>
         </div>
       </div>
-      <xtx-pagination></xtx-pagination>
     </div>
+    <!-- 分页组件 -->
+    <xtx-pagination @current-change="changePager" :total="total" :current-page="reqParams.page"></xtx-pagination>
   </div>
 </template>
 <script>
@@ -103,10 +104,12 @@ export default {
 
     // 初始化或者筛选条件改变后，获取列表数据。
     const commentList = ref([])
+    const total = ref(0) // 总条数
     // 第一个参数 不用深度监听 因为不是对象里包数组,或数组套数组
     watch(reqParams, async () => {
       const data = await findGoodsCommentList(goods.value.id, reqParams)
       commentList.value = data.result.items // 赋值
+      total.value = data.result.counts // 总条数
     }, { immediate: true })
 
     // 点击排序
@@ -122,7 +125,14 @@ export default {
     const formatNickname = (nickname) => {
       return nickname.slice(0, 1) + '****' + nickname.slice(-1)
     }
-    return { commentInfo, currTagIndex, changeTag, reqParams, commentList, changeSort, formatSpecs, formatNickname }
+
+    // 分页数据切换
+    const changePager = (newPage) => {
+      reqParams.page = newPage
+    }
+    // 初始化需要发请求,筛选条件发生改变发请求
+
+    return { commentInfo, currTagIndex, changeTag, reqParams, commentList, changeSort, formatSpecs, formatNickname, total, changePager }
   }
 }
 </script>

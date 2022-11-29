@@ -1,11 +1,11 @@
 <template>
-  <div class="xtx-pagination">
-    <a @click="myCurrentPage--" v-if="myCurrentPage > 1" href="javascript:;">上一页</a>
+  <div class="xtx-pagination" v-if="total>0">
+    <a @click="changePage(myCurrentPage-1)" v-if="myCurrentPage > 1" href="javascript:;">上一页</a>
     <a v-else href="javascript:;" class="disabled">上一页</a>
     <span v-if="myCurrentPage > 1">...</span>
-    <a @click="myCurrentPage=i" v-for="i in pager.btnArr" :key="i" href="javascript:;" :class="{active:myCurrentPage===i}">{{i}}</a>
+    <a @click="changePage(i)" v-for="i in pager.btnArr" :key="i" href="javascript:;" :class="{active:myCurrentPage===i}">{{i}}</a>
     <span v-if="myCurrentPage < pager.pageCount">...</span>
-    <a @click="myCurrentPage++" v-if="myCurrentPage < pager.pageCount" href="javascript:;">下一页</a>
+    <a @click="changePage(myCurrentPage+1)" v-if="myCurrentPage < pager.pageCount" href="javascript:;">下一页</a>
     <a v-else href="javascript:;" class="disabled">下一页</a>
   </div>
 </template>
@@ -13,7 +13,21 @@
 import { ref, computed } from 'vue'
 export default {
   name: 'XtxPagination',
-  setup () {
+  props: {
+    total: {
+      type: Number,
+      default: 100
+    },
+    currentPage: {
+      type: Number,
+      default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 10
+    }
+  },
+  setup (props, { emit }) {
     // 需要数据:
     // 1.按钮个数 5个
     const btnCount = 5
@@ -48,7 +62,15 @@ export default {
       }
       return { pageCount, start, end, btnArr }
     })
-    return { myCurrentPage, pager }
+    // 点击按钮 通知父组件
+    const changePage = (newPage) => {
+      if (myCurrentPage.value !== newPage) { // 不能重复点击同一个按钮
+        myCurrentPage.value = newPage
+        // 通知父组件最新页码
+        emit('current-change', newPage)
+      }
+    }
+    return { myCurrentPage, pager, changePage }
   }
 }
 </script>
