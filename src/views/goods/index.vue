@@ -20,7 +20,7 @@
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
           <!-- 商品 sku组件 -->
-          <GoodsSku :goods="goods" skuId="300078198" @change="changeSku"></GoodsSku>
+          <GoodsSku :goods="goods" skuId="1369155862131642369" @change="changeSku"></GoodsSku>
           <!-- 数量选中组件 -->
           <XtxNumbox label="数量" v-model="num" :max="goods.inventory"></XtxNumbox>
           <!-- 按钮 -->
