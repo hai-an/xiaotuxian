@@ -4,6 +4,8 @@ const Home = () => import('@/views/home/index')
 const TopCategory = () => import('@/views/category')
 const SubCategory = () => import('@/views/category/sub.vue')
 const Goods = () => import('@/views/goods/index')
+
+const Login = () => import('@/views/login/index') // 登录页面
 const routes = [
 // 一级路由
   {
@@ -15,6 +17,10 @@ const routes = [
       { path: '/category/sub/:id', component: SubCategory },
       { path: '/product/:id', component: Goods }
     ]
+  },
+  {
+    path: '/login',
+    component: Login
   }
 ]
 
