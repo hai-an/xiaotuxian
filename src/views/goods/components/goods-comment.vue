@@ -49,6 +49,7 @@
           </div>
         </div>
       </div>
+      <xtx-pagination></xtx-pagination>
     </div>
   </div>
 </template>
