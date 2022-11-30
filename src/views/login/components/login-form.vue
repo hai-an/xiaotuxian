@@ -73,6 +73,7 @@
 import { reactive, ref, watch } from 'vue'
 import { Form, Field } from 'vee-validate' // 官方插件
 import schema from '@/utils/vee-validate-schema'
+import Message from '@/components/library/Message.js'
 export default {
   name: 'LoginForm',
   components: { Form, Field },
@@ -121,9 +122,15 @@ export default {
       // Form组件提供了一个 validate 函数作为整体表单校验，当是返回的是一个promise
       const valid = await formData.value.validate()
       console.log(valid)
+
+      Message({ text: '账号密码不正确,请重试!', type: 'error' })
     }
     return { isMsgLogin, form, schema: mySchema, formData, login }
   }
+  // ,
+  // created () {
+  //   this.$message({ text: '账号密码不正确,请重试!', type: 'error' })
+  // }
 }
 </script>
 <style scoped lang="less">

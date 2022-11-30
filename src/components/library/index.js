@@ -8,7 +8,7 @@ import defaultImg from '@/assets/images/200.png' // 导入加载失败的默认�
 // import XtxMore from './xtx-more.vue'
 // import XtxBread from './xtx-bread.vue'
 // import XtxBreadItem from './xtx-bread-item.vue'
-
+import Message from './Message'
 // 导入library文件夹下的所有组件
 // 批量导入需要使用一个函数 require.context(dir,deep,matching) // 它又一个属性 keys() 获取所有的文件路径
 // 参数：1. 目录  2. 是否加载子目录  3. 加载的正则匹配
@@ -34,6 +34,9 @@ export default {
 
     // 自定义指令
     defineDirective(app) // 全局注册 图片懒加载指令
+
+    // 如果你想挂载全局的属性，能够通过组件实例调用的属性   this.$message
+    app.config.globalProperties.$message = Message// 原型函数
   }
 }
 const defineDirective = (app) => {
