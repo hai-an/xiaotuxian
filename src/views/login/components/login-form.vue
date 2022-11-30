@@ -146,7 +146,7 @@ export default {
             // 短信登录
             data = await userMobileLogin(form)
           }
-          // 存储用户信息
+          // 存储用户信息----
           const { id, account, nickname, avatar, token, mobile } = data.result
           store.commit('user/setUser', { id, account, nickname, avatar, token, mobile })
           // 提示
