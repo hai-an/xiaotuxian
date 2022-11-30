@@ -17,7 +17,7 @@ document.body.appendChild(div) // 添加到 dom树里
 // 定时器
 let timer = null
 
-export default ({ type, text, duration = 1500 }) => {
+export default ({ type, text, duration = 2000 }) => {
 // 渲染组件
 // 1.导入消息提示组件
 // 2.将消息提示组件编译为 虚拟节点(dom节点)

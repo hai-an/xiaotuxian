@@ -40,7 +40,7 @@
           <div class="input">
             <i class="iconfont icon-code"></i>
             <Field :class="{error:errors.code}" name="code" v-model="form.code" type="text" placeholder="请输入验证码" />
-            <span class="code">发送验证码</span>
+            <span @click="send()" class="code">{{time===0?'发送验证码':`${time}秒后点击`}}</span>
           </div>
           <div v-if="errors.code" class="error"><i class="iconfont icon-warning" />{{errors.code}}</div>
         </div>
@@ -70,10 +70,15 @@
   </div>
 </template>
 <script>
-import { reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { userMobileLoginMsg, userAccountLogin, userMobileLogin } from '@/api/user'
 import { Form, Field } from 'vee-validate' // 官方插件
 import schema from '@/utils/vee-validate-schema'
-import Message from '@/components/library/Message.js'
+
+import Message from '@/components/library/Message'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { useIntervalFn } from '@vueuse/core'
 export default {
   name: 'LoginForm',
   components: { Form, Field },
@@ -117,15 +122,79 @@ export default {
       formData.value.resetForm() // 校验效果清除，Form组件提供resetForm()
     })
 
+    const store = useStore()
+    const router = useRouter()
+    const route = useRoute()
+    console.log(router)
+    console.log(route)
+
     // 点击登录时,校验
     const login = async (value) => {
       // Form组件提供了一个 validate 函数作为整体表单校验，当是返回的是一个promise
       const valid = await formData.value.validate()
-      console.log(valid)
+      // console.log(valid)
+      if (valid) {
+        // 1,准备 api接口,调用api获取数据
+        // 2.成功: 存储用户信息 + 跳转至来源页面或者首页 + 消息提示
+        // 3.失败:消息提示
+        let data = null
+        try {
+          if (!isMsgLogin.value) {
+          // 账号密码登录
+            data = await userAccountLogin({ account: form.account, password: form.password })
+          } else {
+            // 短信登录
+            data = await userMobileLogin(form)
+          }
+          // 存储用户信息
+          const { id, account, nickname, avatar, token, mobile } = data.result
+          store.commit('user/setUser', { id, account, nickname, avatar, token, mobile })
+          // 提示
+          Message({ type: 'success', text: '登录成功' })
+          // 跳转至来源页面或者首页
+          router.push(route.query.redirectUrl || './')
+        } catch (e) {
+          Message({ type: 'error', text: '登录失败' })
+          // Message({ type: 'error', text: error.response.data.message || '登录失败' })
+        }
+      }
 
-      Message({ text: '账号密码不正确,请重试!', type: 'error' })
+      // Message({ text: '账号密码不正确,请重试!', type: 'error' })
     }
-    return { isMsgLogin, form, schema: mySchema, formData, login }
+
+    // pause 暂停 resume 开始
+    // useIntervalFn(回调函数,执行间隔,是否立即开启)
+    const { pause, resume } = useIntervalFn(() => {
+      time.value--
+      // 秒数 小于等于0,停止定时器
+      if (time.value <= 0) {
+        pause()
+      }
+    }, 1000, false)
+    // 销毁定时器
+    onMounted(() => {
+      pause()
+    })
+    // 倒计时标识
+    const time = ref(0)
+    // 发送验证码 方法
+    const send = async () => {
+      // 拿到 当前手机号 进行验证
+      const valid = mySchema.mobile(form.mobile)
+      if (valid === true) { // 通过验证
+        // 没有倒计时才可以发送
+        if (time.value === 0) {
+          await userMobileLoginMsg(form.mobile)
+          Message({ type: 'success', text: '发送成功' }) // 提示信息
+          time.value = 60
+          resume()
+        }
+      } else {
+        // 失败,使用vee的错误函数显示错误信息 setFieldError(字段,错误信息)
+        formData.value.setFieldError('mobile', valid)
+      }
+    }
+    return { isMsgLogin, form, schema: mySchema, formData, login, send, time }
   }
   // ,
   // created () {
