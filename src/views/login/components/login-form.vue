@@ -61,7 +61,13 @@
     <!-- </div> -->
     </Form>
     <div class="action">
-      <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      <!-- <span id="qqLoginBtn"></span> -->
+      <!-- <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+
+      </a> -->
+      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=101941968&response_type=token&scope=all&redirect_uri=http%3A%2F%2Ferabbit.itheima.net%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      </a>
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -74,6 +80,7 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { userMobileLoginMsg, userAccountLogin, userMobileLogin } from '@/api/user'
 import { Form, Field } from 'vee-validate' // 官方插件
 import schema from '@/utils/vee-validate-schema'
+// import QC from 'qc'
 
 import Message from '@/components/library/Message'
 import { useStore } from 'vuex'
@@ -83,6 +90,12 @@ export default {
   name: 'LoginForm',
   components: { Form, Field },
   setup () {
+  //   onMounted(() => {
+  //     // 组件渲染完毕，使用QC生成QQ登录按钮
+  //     QC.Login({
+  //       btnId: 'qqLoginBtn'
+  //     })
+  //   })
     // 是否短信登录
     const isMsgLogin = ref(false)
     // 表单对象数据
@@ -125,8 +138,6 @@ export default {
     const store = useStore()
     const router = useRouter()
     const route = useRoute()
-    console.log(router)
-    console.log(route)
 
     // 点击登录时,校验
     const login = async (value) => {
@@ -134,10 +145,10 @@ export default {
       const valid = await formData.value.validate()
       // console.log(valid)
       if (valid) {
+        let data = null
         // 1,准备 api接口,调用api获取数据
         // 2.成功: 存储用户信息 + 跳转至来源页面或者首页 + 消息提示
         // 3.失败:消息提示
-        let data = null
         try {
           if (!isMsgLogin.value) {
           // 账号密码登录
@@ -148,6 +159,7 @@ export default {
           }
           // 存储用户信息----
           const { id, account, nickname, avatar, token, mobile } = data.result
+          console.log('id, account, nickname, avatar, token, mobile:', id, account, nickname, avatar, token, mobile)
           store.commit('user/setUser', { id, account, nickname, avatar, token, mobile })
           // 提示
           Message({ type: 'success', text: '登录成功' })

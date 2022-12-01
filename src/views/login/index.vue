@@ -14,6 +14,7 @@
       <!-- 二维码 -->
       <div v-if="activeName==='qrcode'" class="qrcode-box">
         <img src="@/assets/images/qrcode.jpg" alt="">
+        <!-- <span id="qqLoginBtn"></span> -->
         <p>打开 <a href="javascript:;">小兔鲜App</a> 扫码登录</p>
       </div>
     </div>
@@ -25,8 +26,8 @@
 import LoginHeader from './components/login-header'
 import LoginFooter from './components/login-footer'
 import LoginForm from './components/login-form'
-
 import { ref } from 'vue'
+
 export default {
   name: 'PageLogin',
   components: {
