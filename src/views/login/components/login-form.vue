@@ -62,12 +62,12 @@
     </Form>
     <div class="action">
       <!-- <span id="qqLoginBtn"></span> -->
-      <!-- <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
-
-      </a> -->
-      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=101941968&response_type=token&scope=all&redirect_uri=http%3A%2F%2Ferabbit.itheima.net%2F%23%2Flogin%2Fcallback">
+      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
         <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
       </a>
+      <!-- <a href="https://graph.qq.com/oauth2.0/authorize?client_id=101941968&response_type=token&scope=all&redirect_uri=http%3A%2F%2Ferabbit.itheima.net%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      </a> -->
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -159,7 +159,7 @@ export default {
           }
           // 存储用户信息----
           const { id, account, nickname, avatar, token, mobile } = data.result
-          console.log('id, account, nickname, avatar, token, mobile:', id, account, nickname, avatar, token, mobile)
+          // console.log('id, account, nickname, avatar, token, mobile:', id, account, nickname, avatar, token, mobile)
           store.commit('user/setUser', { id, account, nickname, avatar, token, mobile })
           // 提示
           Message({ type: 'success', text: '登录成功' })
