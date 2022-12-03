@@ -30,6 +30,7 @@
                 <div class="goods">
                   <RouterLink :to="`/product/${item.id}`"><img :src="item.picture" alt=""></RouterLink>
                   <div>
+
                     <p class="name ellipsis">{{item.name}}</p>
                     <!-- 选择规格组件 -->
                   </div>
@@ -40,7 +41,7 @@
                 <p v-if="item.price-item.nowPrice>0">比加入时降价 <span class="red">&yen;{{item.price-item.nowPrice}}</span></p>
               </td>
               <td class="tc">
-                <XtxNumbox />
+                <XtxNumbox :modelValue="item.count" :max="item.stock" @change="$event=>changeCount(item.skuId,$event)"/>
               </td>
               <td class="tc"><p class="f16 red">&yen;{{item.nowPrice*100*item.count/100}}</p></td>
               <td class="tc">
@@ -133,7 +134,11 @@ export default {
       }).catch(e => console.log('取消'))
       // store.dispatch('cart/batchDeleteCart')
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart }
+    // 修改商品数量
+    const changeCount = (skuId, count) => {
+      store.dispatch('cart/updateCart', { skuId, count })
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount }
   }
 }
 </script>
