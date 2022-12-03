@@ -7,6 +7,7 @@ const Goods = () => import('@/views/goods/index')
 
 const Login = () => import('@/views/login/index') // 登录页面
 const LoginCallback = () => import('@/views/login/callback') // 登录重定向
+const Cart = () => import('@/views/cart/index')
 const routes = [
 // 一级路由
   {
@@ -20,7 +21,8 @@ const routes = [
     ]
   },
   { path: '/login', component: Login }, // 登录页面
-  { path: '/login/callback', component: LoginCallback } // 登录重定向
+  { path: '/login/callback', component: LoginCallback }, // 登录重定向
+  { path: '/cart', component: Cart }
 ]
 
 // 创建路由实例
