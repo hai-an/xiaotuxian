@@ -103,7 +103,7 @@ export default {
     }
     // 全选逻辑
     const checkAll = (selected) => {
-      store.dispatch('cart/checkAll', selected)
+      store.dispatch('cart/checkAllCart', selected)
     }
     return { checkOne, checkAll }
   }
