@@ -66,3 +66,37 @@ export const userQQBindLogin = ({ unionId, mobile, code }) => {
 export const userCheckAccount = (account) => {
   return request('/register/check', 'get', { account })
 }
+
+/**
+ * 获取QQ完善信息的时候短信验证码
+ * @param {String} mobile - 手机号
+ * @returns promise
+ */
+export const userQQPatchCode = (mobile) => {
+  return request('/register/code', 'get', { mobile })
+}
+
+/**
+ * QQ登录-完善帐号信息
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} mobile - 手机号
+ * @param {String} code - 验证码
+ * @param {String} account - 账号
+ * @param {String} password - 密码
+ * @returns
+ */
+export const userQQPatchLogin = ({ unionId, mobile, code, account, password }) => {
+  return request(`/login/social/${unionId}/complement`, 'post', { unionId, mobile, code, account, password })
+}
+
+/**
+ * QQ登录-解除绑定手机号
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} mobile - 手机号
+ * @param {String} code - 验证码
+ * @returns
+ */
+
+export const unbindMobileNumber = (mobile) => {
+  return request('/login/social/unbind', 'get', { mobile })
+}

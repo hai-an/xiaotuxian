@@ -20,16 +20,18 @@
         <div class="spec">
           <GoodsName :goods="goods"></GoodsName>
           <!-- 商品 sku组件 -->
-          <GoodsSku :goods="goods" skuId="1369155862131642369" @change="changeSku"></GoodsSku>
+          <!-- goods.find(sku => sku.inventory>0) goods.skus[0].id -->
+          <!-- <p>{{goods.skus.find(sku => sku.inventory>0)}}</p> -->
+          <GoodsSku v-if="goods.skus[0].id" :goods="goods" :skuId="getSkuId()" @change="changeSku"></GoodsSku>
           <!-- 数量选中组件 -->
           <XtxNumbox label="数量" v-model="num" :max="goods.inventory"></XtxNumbox>
           <!-- 按钮 -->
-          <XtxButton type="primary" style="margin-top:20px;">加入购物车</XtxButton>
+          <XtxButton @click="insertCart" type="primary" style="margin-top:20px;">加入购物车</XtxButton>
         </div>
 
       </div>
       <!-- 商品推荐 -->
-      <GoodsRelevant :goodsId="goods.id" />
+      <GoodsRelevant  :goodsId="goods.id" />
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
@@ -58,14 +60,37 @@ import GoodsSku from './components/goods-sku.vue'
 import GoodsTabs from './components/goods-tabs'
 import GoodsHot from './components/goods-hot'
 import GoodsWarn from './components/goods-warn'
-import { ref, watch, nextTick, provide } from 'vue'
+import { ref, watch, nextTick, provide, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+// import Message from '@/components/library/Message'
 export default {
   name: 'XtxGoodsPage',
   components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs, GoodsHot, GoodsWarn },
   setup () {
+    // 获取商品详情
+    const useGoods = () => {
+      // 出现路由地址商品ID变化,但是不会重新初始化组件
+      const goods = ref(null)
+      const route = useRoute()
+      // 监听商品ID变化,即=> 路由id变化
+      watch(() => route.params.id, (newVal) => {
+        if (newVal && route.path === `/product/${newVal}`) {
+          findGoods(route.params.id).then(data => {
+            // 让商品的数据为 null 后,利用 v-if 重新销毁组件后,再重新创建组件
+            goods.value = null
+            nextTick(() => {
+              goods.value = data.result
+              console.log('goods', goods.value.skus[0].id)
+              getSkuId()
+            })
+          })
+        }
+      }, { immediate: true })
+      return goods
+    }
     const goods = useGoods()
-    // console.log('goods', goods)
+    // sku 改变时,触发
     const changeSku = sku => {
       console.log('sku', sku)
       // 修改商品的现价原价库存信息
@@ -73,35 +98,55 @@ export default {
         goods.value.price = sku.price
         goods.value.oldPrice = sku.oldPrice
         goods.value.inventory = sku.inventory
+
+        currSku.value = sku
+      } else {
+        currSku.value = null
       }
     }
+    // ---------------
+    const getSkuId = () => {
+      const currSkuId = goods.value.skus.find(sku => sku.inventory > 0)
+      console.log('currSkuId.id', currSkuId.id)
+      return currSkuId.id
+    }
+
     // 共享给 后代 使用数据
     provide('goods', goods)
 
     const num = ref(1) // 选择数量
-    return { goods, changeSku, num }
+    // 加入购物车逻辑
+    const currSku = ref(null)
+    const instance = getCurrentInstance()
+    const store = useStore()
+    // 点击加入购物车 触发
+    const insertCart = () => {
+      if (!currSku.value) {
+        return instance.proxy.$message('请选择商品规格')
+      }
+      if (num.value > goods.inventory) {
+        return instance.proxy.$message('库存不足')
+      }
+      store.dispatch('cart/insertCart', {
+        id: goods.value.id,
+        skuId: currSku.value.skuId,
+        name: goods.value.name,
+        picture: goods.value.mainPictures[0],
+        price: currSku.value.price,
+        nowPrice: currSku.value.price,
+        count: num.value,
+        attrsText: currSku.value.specsText,
+        selected: true,
+        isEffective: true,
+        stock: currSku.value.inventory
+      }).then(() => {
+        instance.proxy.$message('加入购物车成功', 'success')
+      })
+    }
+    return { goods, changeSku, num, getSkuId, insertCart }
   }
 }
 
-// 获取商品详情
-const useGoods = () => {
-  // 出现路由地址商品ID变化,但是不会重新初始化组件
-  const goods = ref(null)
-  const route = useRoute()
-  // 监听商品ID变化,即=> 路由id变化
-  watch(() => route.params.id, (newVal) => {
-    if (newVal && route.path === `/product/${newVal}`) {
-      findGoods(route.params.id).then(data => {
-        // 让商品的数据为 null 后,利用 v-if 重新销毁组件后,再重新创建组件
-        goods.value = null
-        nextTick(() => {
-          goods.value = data.result
-        })
-      })
-    }
-  }, { immediate: true })
-  return goods
-}
 </script>
 
 <style scoped lang='less'>
