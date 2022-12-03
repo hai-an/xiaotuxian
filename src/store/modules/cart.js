@@ -40,6 +40,21 @@ export default {
     }
   },
   actions: {
+    // 批量删除选中的商品
+    batchDeleteCart (ctx) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 登录 TODO
+        } else {
+          // 本地
+          // 1. 获取有效的商品列表，遍历的去调用修改mutations即可
+          ctx.getters.selectedList.forEach(item => {
+            ctx.commit('deleteCart', item.skuId)
+          })
+          resolve()
+        }
+      })
+    },
     // 做有效商品的全选&反选
     checkAllCart (ctx, selected) {
       return new Promise((resolve, reject) => {

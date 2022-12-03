@@ -80,7 +80,7 @@
         <div class="batch">
           <XtxCheckbox @change="checkAll" :modelValue="$store.getters['cart/isCheckAll']">全选</XtxCheckbox>
 
-          <a href="javascript:;">删除商品</a>
+          <a @click="batchDeleteCart" href="javascript:;">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
           <a href="javascript:;">清空失效商品</a>
         </div>
@@ -101,6 +101,7 @@ import CartNone from './components/cart-none'
 import { useStore } from 'vuex'
 // import Message from '@/components/library/Message'
 import Confirm from '@/components/library/Confirm'
+import Message from '@/components/library/Message'
 
 export default {
   name: 'XtxCartPage',
@@ -118,12 +119,21 @@ export default {
     // 删除逻辑
     const deleteCart = (skuId) => {
       console.log(skuId)
-      Confirm({ title: '友情提示', text: '你确定要删除该商品吗?' }).then(() => {
+      Confirm({ title: '友情提示', text: '亲,你确定要删除该商品吗?' }).then(() => {
         store.dispatch('cart/deleteCart', skuId)
-      }).catch(e => console.log('取消'))
+        Message({ type: 'success', text: '删除成功' })
+      }).catch(e => {})
       // store.dispatch('cart/deleteCart', skuId).then(() => Message({ type: 'success', text: '删除成功' }))
     }
-    return { checkOne, checkAll, deleteCart }
+    // 批量删除商品 逻辑
+    const batchDeleteCart = () => {
+      Confirm({ title: '友情提示', text: '亲,你确定要删除选中的商品吗?' }).then(() => {
+        store.dispatch('cart/batchDeleteCart')
+        Message({ type: 'success', text: '删除成功' })
+      }).catch(e => console.log('取消'))
+      // store.dispatch('cart/batchDeleteCart')
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart }
   }
 }
 </script>
