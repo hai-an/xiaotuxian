@@ -92,13 +92,11 @@ export default {
   getters: {
     // 有效商品 列表
     validList (state) {
-      console.log('state', state)
-
       return state.list.filter(item => item.stock > 0 && item.isEffective)
     },
     // 有效商品数量/件数
     validTotal (state, getters) {
-      console.log('state, getters', state, getters)
+      // console.log('state, getters', state, getters)
 
       return getters.validList.reduce((c, p) => c + p.count, 0)
     },
@@ -106,6 +104,26 @@ export default {
     validAmount (state, getters) {
       console.log(state, getters)
       return getters.validList.reduce((p, c) => p + c.nowPrice * 100 * c.count, 0) / 100
+    },
+    // 无效商品列表
+    invalidList (state) {
+      return state.list.filter(item => item.stock <= 0 && !item.isEffective)
+    },
+    // 已选商品列表
+    selectedList (state, getters) {
+      return getters.validList.filter(item => item.selected)
+    },
+    // 已选商品总件数
+    selectedTotal (state, getters) {
+      return getters.selectedList.reduce((c, p) => c + p.count, 0)
+    },
+    // 已选商品总金额
+    selectedAmount (state, getters) {
+      return getters.selectedList.reduce((p, c) => p + c.nowPrice * 100 * c.count, 0) / 100
+    },
+    // 是否全选
+    isCheckAll (state, getters) {
+      return getters.validList.length === getters.selectedList.length && getters.selectedList.length !== 0
     }
   }
 }
