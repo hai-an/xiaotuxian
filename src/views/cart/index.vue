@@ -79,6 +79,7 @@
       <div class="action">
         <div class="batch">
           <XtxCheckbox @change="checkAll" :modelValue="$store.getters['cart/isCheckAll']">全选</XtxCheckbox>
+
           <a href="javascript:;">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
           <a href="javascript:;">清空失效商品</a>
@@ -98,7 +99,9 @@
 import GoodRelevant from '@/views/goods/components/goods-relevant'
 import CartNone from './components/cart-none'
 import { useStore } from 'vuex'
-import Message from '@/components/library/Message'
+// import Message from '@/components/library/Message'
+import Confirm from '@/components/library/Confirm'
+
 export default {
   name: 'XtxCartPage',
   components: { GoodRelevant, CartNone },
@@ -114,7 +117,11 @@ export default {
     }
     // 删除逻辑
     const deleteCart = (skuId) => {
-      store.dispatch('cart/deleteCart', skuId).then(() => Message({ type: 'success', text: '删除成功' }))
+      console.log(skuId)
+      Confirm({ title: '友情提示', text: '你确定要删除该商品吗?' }).then(() => {
+        store.dispatch('cart/deleteCart', skuId)
+      }).catch(e => console.log('取消'))
+      // store.dispatch('cart/deleteCart', skuId).then(() => Message({ type: 'success', text: '删除成功' }))
     }
     return { checkOne, checkAll, deleteCart }
   }
