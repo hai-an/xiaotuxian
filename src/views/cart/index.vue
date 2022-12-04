@@ -30,9 +30,9 @@
                 <div class="goods">
                   <RouterLink :to="`/product/${item.id}`"><img :src="item.picture" alt=""></RouterLink>
                   <div>
-
                     <p class="name ellipsis">{{item.name}}</p>
                     <!-- 选择规格组件 -->
+                    <CartSku @change="$event=>updateCartSku(item.skuId,$event)" :skuId="item.skuId" :attrs-text="item.attrsText" ></CartSku>
                   </div>
                 </div>
               </td>
@@ -99,6 +99,7 @@
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant'
 import CartNone from './components/cart-none'
+import CartSku from './components/cart-sku.vue'
 import { useStore } from 'vuex'
 // import Message from '@/components/library/Message'
 import Confirm from '@/components/library/Confirm'
@@ -106,7 +107,11 @@ import Message from '@/components/library/Message'
 
 export default {
   name: 'XtxCartPage',
-  components: { GoodRelevant, CartNone },
+  components: {
+    GoodRelevant,
+    CartNone,
+    CartSku
+  },
   setup () {
     const store = useStore()
     // 单选逻辑
@@ -138,7 +143,15 @@ export default {
     const changeCount = (skuId, count) => {
       store.dispatch('cart/updateCart', { skuId, count })
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount }
+
+    // 修改商品规格
+    const updateCartSku = (oldSkuId, newSku) => {
+      // console.log('oldSkuId, newSku:', oldSkuId, newSku)
+
+      store.dispatch('cart/updateCartSku', { oldSkuId, newSku })
+    }
+
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount, updateCartSku }
   }
 }
 </script>

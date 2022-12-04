@@ -45,3 +45,12 @@ export const findGoodsCommentList = (id, params) => {
   // axios 遇见http https开头的地址,不会加上基准地址
   return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate/page`, 'get', params)
 }
+
+/**
+ * 获取商品的specs和skus
+ * @param {String} skuId - 商品SKUID
+ * @returns Promise
+ */
+export const getSpecsAndSkus = (skuId) => {
+  return request(`/goods/sku/${skuId}`, 'get')
+}

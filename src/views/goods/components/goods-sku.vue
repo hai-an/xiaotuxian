@@ -78,12 +78,7 @@ const inDefaultSelected = (goods, skuId) => {
   // 1.找出sku的信息
   // 2.遍历每一个按钮,按钮的值和 sku记录的值相同,就选中
   const sku = goods.skus.find(sku => sku.id === skuId)
-  console.log('goods', goods)
-  console.log('goods.specs', goods.specs)
-  console.log('goods.skus', goods.skus[0].id)
-  console.log('sku', sku)
-  console.log('skuId', skuId)
-
+  // 设置默认选中
   goods.specs.forEach((item, i) => {
     const val = item.values.find(val => val.name === sku.specs[i].valueName)
     val.selected = true
@@ -128,9 +123,9 @@ export default {
       // 2.不是完整的sku组合按钮,提交对象父组件
       const validSelectedValues = getSelectedArr(props.goods.specs).filter(v => v)
       if (validSelectedValues.length === props.goods.specs.length) {
-        console.log('完整')
+        // console.log('完整')
         const skuIds = pathMap[validSelectedValues.join(spliter)]
-        console.log('skuIds', skuIds)
+        // console.log('skuIds', skuIds)
         const sku = props.goods.skus.find(sku => sku.id === skuIds[0])
         emit('change', {
           skuId: sku.id,
@@ -140,13 +135,14 @@ export default {
           // 属性名:属性名 属性值 属性名1 属性值1
           specsText: sku.specs.reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, '').trim()
         })
-        console.log(sku.specs.reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, ''))
+        // console.log(sku.specs.reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, ''))
       } else {
         console.log('不完整')
         // 父组件需要判断是否规格选择完整,不完整不能加购物车
         emit('change', {})
       }
     }
+
     return { clickSpecs, pathMap }
   }
 }

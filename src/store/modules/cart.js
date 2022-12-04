@@ -40,6 +40,26 @@ export default {
     }
   },
   actions: {
+    // 修改sku规格函数
+    updateCartSku (ctx, { oldSkuId, newSku }) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 登录 TODO
+        } else {
+          // 本地
+          // 1.获取旧的商品信息
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          // 2.删除旧的商品
+          ctx.commit('deleteCart', oldSkuId)
+          // 3.合并一条新的商品信息
+          const { skuId, price: nowPrice, inventory: stock, specsText: attrsText } = newSku
+          const newGoods = { ...oldGoods, skuId, nowPrice, stock, attrsText }
+          // 4.去插入即可
+          ctx.commit('insertCart', newGoods)
+          resolve()
+        }
+      })
+    },
     // 批量删除选中的商品
     batchDeleteCart (ctx, isClear) {
       return new Promise((resolve, reject) => {
@@ -145,7 +165,6 @@ export default {
     },
     // 有效商品总金额
     validAmount (state, getters) {
-      console.log(state, getters)
       return getters.validList.reduce((p, c) => p + c.nowPrice * 100 * c.count, 0) / 100
     },
     // 无效商品列表

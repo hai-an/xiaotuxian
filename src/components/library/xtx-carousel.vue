@@ -103,7 +103,7 @@ export default {
         newIndex = props.sliders.length - 1
       }
       index.value = newIndex
-      console.log(index)
+      // console.log(index)
     }
 
     // 功能四 组件消耗，清理定时器

@@ -63,7 +63,7 @@ import GoodsWarn from './components/goods-warn'
 import { ref, watch, nextTick, provide, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-// import Message from '@/components/library/Message'
+import Message from '@/components/library/Message'
 export default {
   name: 'XtxGoodsPage',
   components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs, GoodsHot, GoodsWarn },
@@ -121,12 +121,15 @@ export default {
     const store = useStore()
     // 点击加入购物车 触发
     const insertCart = () => {
-      if (!currSku.value) {
-        return instance.proxy.$message('请选择商品规格')
-      }
-      if (num.value > goods.inventory) {
-        return instance.proxy.$message('库存不足')
-      }
+      nextTick(() => {
+        if (!currSku.value) {
+          console.log('currSku.value', currSku.value)
+          return instance.proxy.$message('请选择商品规格')
+        }
+        if (num.value > goods.inventory) {
+          return instance.proxy.$message('库存不足')
+        }
+      })
       store.dispatch('cart/insertCart', {
         id: goods.value.id,
         skuId: currSku.value.skuId,
@@ -140,9 +143,10 @@ export default {
         isEffective: true,
         stock: currSku.value.inventory
       }).then(() => {
-        instance.proxy.$message('加入购物车成功', 'success')
+        Message({ text: '加入购物车成功', type: 'success' })
       })
     }
+
     return { goods, changeSku, num, getSkuId, insertCart }
   }
 }
