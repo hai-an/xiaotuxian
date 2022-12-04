@@ -79,6 +79,13 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // 登录 TODO
+          const ids = ctx.getters[isClear ? 'invalidList' : 'selectedList'].map(item => item.skuId)
+          deleteCart(ids).then(() => {
+            return findCartList() // 获取登录后的购物车列表
+          }).then(data => {
+            ctx.commit('setCartList', data.result)
+            resolve()
+          })
         } else {
           // 本地
           // 1. 获取有效的商品列表，遍历的去调用修改mutations即可
@@ -123,7 +130,7 @@ export default {
         if (ctx.rootState.user.profile.token) {
           // 已登录 TODO
           insertCart(goods).then(() => {
-            return findCartList()
+            return findCartList() // 获取登录后的购物车列表
           }).then(data => {
             ctx.commit('setCartList', data.result)
             resolve()

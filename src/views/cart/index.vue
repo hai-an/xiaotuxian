@@ -133,10 +133,12 @@ export default {
     }
     // 批量删除选中商品/批量删除失效商品 逻辑
     const batchDeleteCart = (isClear) => {
+      // 如果要做批量删除的列表无数据，阻止提示下没有你要删除的商品。
+      // 清空失效商品：目前传人[]数据，会清空说有的商品包括有效商品（后台BUG）
       Confirm({ title: '友情提示', text: `亲,你确定要删除${isClear ? '失效' : '选中'}的商品吗?` }).then(() => {
         store.dispatch('cart/batchDeleteCart', isClear)
         Message({ type: 'success', text: '删除成功' })
-      }).catch(e => console.log('取消'))
+      }).catch(e => {})
       // store.dispatch('cart/batchDeleteCart')
     }
     // 修改商品数量
