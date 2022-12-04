@@ -1,4 +1,4 @@
-import { getNewCartGoods, mergeLocalCart, findCartList, insertCart } from '@/api/cart'
+import { getNewCartGoods, mergeLocalCart, findCartList, insertCart, deleteCart } from '@/api/cart'
 
 // 购物车模块
 export default {
@@ -167,6 +167,12 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // 登录
+          deleteCart([skuId]).then(() => {
+            return findCartList() // 获取登录后的购物车列表
+          }).then(data => {
+            ctx.commit('setCartList', data.result)
+            resolve()
+          })
         } else {
           // 本地
           ctx.commit('deleteCart', skuId)
