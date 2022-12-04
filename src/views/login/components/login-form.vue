@@ -161,10 +161,13 @@ export default {
           const { id, account, nickname, avatar, token, mobile } = data.result
           // console.log('id, account, nickname, avatar, token, mobile:', id, account, nickname, avatar, token, mobile)
           store.commit('user/setUser', { id, account, nickname, avatar, token, mobile })
-          // 提示
-          Message({ type: 'success', text: '登录成功' })
-          // 跳转至来源页面或者首页
-          router.push(route.query.redirectUrl || './')
+          // 合并购物车操作
+          store.dispatch('cart/mergeLocalCart').then(() => {
+            // 提示
+            Message({ type: 'success', text: '登录成功' })
+            // 跳转至来源页面或者首页
+            router.push(route.query.redirectUrl || './')
+          })
         } catch (e) {
           Message({ type: 'error', text: '登录失败' })
           // Message({ type: 'error', text: error.response.data.message || '登录失败' })

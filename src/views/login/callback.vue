@@ -64,10 +64,12 @@ export default {
           // 1.存储用户信息
           const { id, account, mobile, nickname, token } = data.result
           store.commit('user/setUser', { id, account, mobile, nickname, token })
-          // 2.跳转到来源页面或者首页
-          router.push(store.state.user.redirectUrl)
-          // 3.成功提示
-          Message({ type: 'success', text: 'QQ登录成功' })
+          store.dispatch('cart/mergeLocalCart').then(() => {
+          // 2. 跳转到来源页或者首页
+            router.push(store.state.user.redirectUrl)
+            // 3. 成功提示
+            Message({ type: 'success', text: 'QQ登录成功' })
+          })
         }).catch(e => {
           // 代表:使用QQ登录失败 => 1.没绑定小兔鲜账号 2.没有小兔鲜账号(未注册)
           isBind.value = false

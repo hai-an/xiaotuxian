@@ -1,4 +1,4 @@
-import { getNewCartGoods } from '@/api/cart'
+import { getNewCartGoods, mergeLocalCart } from '@/api/cart'
 
 // 购物车模块
 export default {
@@ -12,6 +12,10 @@ export default {
   // 本地: id skuId name picture price nowPrice count attrsText selected stock isEffective
   // 线上:比上面 isCollect 有用 discount 无用,两项信息
   mutations: {
+    // 设置购物车列表
+    setCartList (state, list) {
+      state.list = list
+    },
     // 加入购物车
     insertCart (state, goods) {
       const sameIndex = state.list.findIndex(item => item.skuId === goods.skuId)
@@ -40,6 +44,16 @@ export default {
     }
   },
   actions: {
+    // 合并本地购物车
+    async  mergeLocalCart (ctx) {
+      // 存储token后,调用api接口进行合并
+      const cartList = ctx.getters.validList.map(({ skuId, selected, count }) => {
+        return { skuId, selected, count }
+      })
+      await mergeLocalCart(cartList)
+      // 合并成功,将本地购物车清空
+      ctx.commit('setCartList', [])
+    },
     // 修改sku规格函数
     updateCartSku (ctx, { oldSkuId, newSku }) {
       return new Promise((resolve, reject) => {
