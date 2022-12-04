@@ -36,7 +36,7 @@ export default {
     const CategoryList = computed(() => {
       return store.state.category.list
     })
-    console.log(CategoryList)
+    // console.log(CategoryList)
     const show = (item) => {
       // console.log(item)
       return store.commit('category/show', item)

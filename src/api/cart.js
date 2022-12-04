@@ -19,3 +19,11 @@ export const getNewCartGoods = (skuId) => {
 export const mergeLocalCart = (cartList) => {
   return request('/member/cart/merge', 'post', cartList)
 }
+
+/**
+ * 获取登录后的购物车列表
+ * @returns Promise
+ */
+export const findCartList = () => {
+  return request('/member/cart', 'get')
+}
