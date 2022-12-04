@@ -63,11 +63,24 @@ export default {
       // 合并成功,将本地购物车清空
       ctx.commit('setCartList', [])
     },
-    // 修改sku规格函数
+    // 修改sku规格
     updateCartSku (ctx, { oldSkuId, newSku }) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // 登录 TODO
+          // 1.获取旧的商品信息
+          // 2.删除旧的商品
+          // 3.. {获取修改的skuId 和 原先商品数量} 做一个加入购物车操作
+          // 4.更新列表
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          deleteCart([oldSkuId]).then(() => {
+            return insertCart({ skuId: newSku.skuId, count: oldGoods.count }) // 加入购物车sku商品
+          }).then(() => {
+            return findCartList() // 获取登录后的购物车列表
+          }).then(data => {
+            ctx.commit('setCartList', data.result)
+            resolve()
+          })
         } else {
           // 本地
           // 1.获取旧的商品信息
@@ -125,7 +138,7 @@ export default {
       // payload: 必须 有 skuId, 可能有 selected count
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录
+          // TODO 登录
           updateCart(payload).then(() => {
             return findCartList() // 获取线上最新的商品信息
           }).then(data => {
@@ -188,7 +201,7 @@ export default {
     deleteCart (ctx, skuId) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录
+          // TODO 登录
           deleteCart([skuId]).then(() => {
             return findCartList() // 获取登录后的购物车列表
           }).then(data => {
