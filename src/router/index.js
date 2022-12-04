@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '@/store'
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/home/index')
 const TopCategory = () => import('@/views/category')
@@ -37,4 +38,14 @@ const router = createRouter({
   }
 })
 
+// 路由导航守卫
+router.beforeEach((to, from, next) => {
+  // 用户信息
+  // 没有token, // 跳转去member开头的地址却没有登录 /member
+  if (!store.state.user.profile.token && to.path.startsWith('/member')) {
+    // console.log('to.fullPath', to.fullPath = /member/checkout)
+    next({ path: '/login', query: { redirectUrl: to.fullPath } }) // 去到登录页,成功之后 重定向到
+  }
+  next() // 放行
+})
 export default router
