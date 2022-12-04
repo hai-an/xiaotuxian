@@ -1,4 +1,4 @@
-import { getNewCartGoods, mergeLocalCart, findCartList } from '@/api/cart'
+import { getNewCartGoods, mergeLocalCart, findCartList, insertCart } from '@/api/cart'
 
 // 购物车模块
 export default {
@@ -120,8 +120,14 @@ export default {
     // 加入购物车
     insertCart (ctx, goods) {
       return new Promise((resolve, reject) => {
-        if (ctx.rootState.user.token) {
+        if (ctx.rootState.user.profile.token) {
           // 已登录 TODO
+          insertCart(goods).then(() => {
+            return findCartList()
+          }).then(data => {
+            ctx.commit('setCartList', data.result)
+            resolve()
+          })
         } else {
           // 未登录
           ctx.commit('insertCart', goods)
