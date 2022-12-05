@@ -12,10 +12,20 @@
       <a href="javascript:;">修改地址</a>
     </div>
     <div class="action">
-      <XtxButton class="btn">切换地址</XtxButton>
-      <XtxButton class="btn">添加地址</XtxButton>
+      <XtxButton @click="visibleDialog=true" class="btn">切换地址</XtxButton>
+      <XtxButton  class="btn">添加地址</XtxButton>
     </div>
   </div>
+  <!-- 对话框组件----------------------------- -->
+  <XtxDialog title="切换收货地址" v-model:visible="visibleDialog">
+    对话框内容
+     <!-- vue3.0 仅支持v-slot+template写法 -->
+     <template #footer>
+     <!-- <template v-slot:footer> -->
+        <XtxButton @click="visibleDialog=false" type="gray" style="margin-right:20px">取消</XtxButton>
+        <XtxButton @click="visibleDialog=false" type="primary">确认</XtxButton>
+      </template>
+  </XtxDialog>
 </template>
 <script>
 import { ref } from 'vue'
@@ -29,16 +39,24 @@ export default {
   },
   setup (props) {
     const showAddress = ref(null)
+    // 1.找到默认收货地址
+    // 2.没有默认收货地址,使用第一条收货地址
+    // 3,如果没有数据,提示添加
     if (props.list.length !== 0) {
-      const defaultAddress = props.list.find(item => item.isDefault === 1)
-      if (defaultAddress) {
+      const defaultAddress = props.list.find(item => item.isDefault === 1) // 设置默认收货地址
+      if (defaultAddress) { // 找到默认收货地址
         showAddress.value = defaultAddress
       } else {
         // eslint-disable-next-line vue/no-setup-props-destructure
-        showAddress.value = props.list[0]
+        showAddress.value = props.list[0] // 没有默认收货地址,使用第一条收货地址
       }
+    } else {
+    // 如果没有数据,提示添加
+
     }
-    return { showAddress }
+    // 控制 对话框组件
+    const visibleDialog = ref(false)
+    return { showAddress, visibleDialog }
   }
 }
 </script>
