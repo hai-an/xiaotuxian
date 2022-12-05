@@ -11,7 +11,7 @@
         <h3 class="box-title">收货地址</h3>
         <div class="box-body">
           <!-- 收货地址组件 -->
-          <CheckoutAddress :list="checkoutInfo.userAddresses" />
+          <CheckoutAddress @change="changeAddress" :list="checkoutInfo.userAddresses" />
         </div>
         <!-- 商品信息 -->
         <h3 class="box-title">商品信息</h3>
@@ -78,16 +78,29 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import CheckoutAddress from './components/checkout-address'
 import { findCheckoutInfo } from '@/api/order'
 export default {
   name: 'XtxPayCheckoutPage',
   components: { CheckoutAddress },
+  // 1.在拥有根元素的组件中,触发自定义事件,有没有emits选项无所谓
+  // 2.如果你的组件渲染的代码片段,vue3.0规范,需要在emits中申明你所触发的自定义事件
+  // 3.提倡:你发了自定义事件,需要在emits选项申明下,代码可读性更高!
+  emits: ['change'],
   setup () {
     const checkoutInfo = ref(null)
     findCheckoutInfo().then(data => { checkoutInfo.value = data.result })
-    return { checkoutInfo }
+    // 收货地址 ----  需要提交的字段
+    const requestParams = reactive({
+      addressId: null
+    })
+    // 切换地址 逻辑
+    const changeAddress = (addressId) => {
+      requestParams.addressId = addressId
+      console.log(addressId)
+    }
+    return { checkoutInfo, changeAddress }
   }
 }
 </script>

@@ -12,18 +12,28 @@
       <a href="javascript:;">修改地址</a>
     </div>
     <div class="action">
-      <XtxButton @click="visibleDialog=true" class="btn">切换地址</XtxButton>
+      <XtxButton @click="openDialogFn()" class="btn">切换地址</XtxButton>
       <XtxButton  class="btn">添加地址</XtxButton>
     </div>
   </div>
   <!-- 对话框组件----------------------------- -->
   <XtxDialog title="切换收货地址" v-model:visible="visibleDialog">
-    对话框内容
+    <div class="text item" v-for="item in list" :key="item.id"
+    @click="()=>{selectedAddress=item,confirmAddressFn()}"
+    :class="{active:selectedAddress&&selectedAddress.id === item.id}"
+    >
+      <ul>
+          <li><span>收<i/>货<i/>人：</span>{{item.receiver}}</li>
+          <li><span>联系方式：</span>{{item.contact.replace(/^(\d{3})\d{4}(\d{4})$/,'$1****$2')}}</li>
+          <li><span>收货地址：</span>{{item.fullLocation.replace(/ /g,'')+item.address}}</li>
+          <!-- replace(/ /g,'') 去空格 -->
+      </ul>
+    </div>
      <!-- vue3.0 仅支持v-slot+template写法 -->
      <template #footer>
      <!-- <template v-slot:footer> -->
         <XtxButton @click="visibleDialog=false" type="gray" style="margin-right:20px">取消</XtxButton>
-        <XtxButton @click="visibleDialog=false" type="primary">确认</XtxButton>
+        <XtxButton @click="confirmAddressFn()" type="primary">确认</XtxButton>
       </template>
   </XtxDialog>
 </template>
@@ -37,7 +47,8 @@ export default {
       default: () => []
     }
   },
-  setup (props) {
+  emits: ['change'],
+  setup (props, { emit }) {
     const showAddress = ref(null)
     // 1.找到默认收货地址
     // 2.没有默认收货地址,使用第一条收货地址
@@ -50,17 +61,68 @@ export default {
         // eslint-disable-next-line vue/no-setup-props-destructure
         showAddress.value = props.list[0] // 没有默认收货地址,使用第一条收货地址
       }
-    } else {
-    // 如果没有数据,提示添加
-
     }
     // 控制 对话框组件
     const visibleDialog = ref(false)
-    return { showAddress, visibleDialog }
+    // 默认通知一个地址给父组件
+    // emit('change', showAddress.value && showAddress.value.id)
+    emit('change', showAddress.value?.id)
+    console.log(showAddress.value.id)
+
+    // 记录当前选中的 addressId
+    const selectedAddress = ref(null)
+    // 切换地址 逻辑
+    const confirmAddressFn = () => {
+      // 把当前的 address 替换 选中的address
+      showAddress.value = selectedAddress.value
+      // 通知父组件 更新id
+      emit('change', showAddress.value?.id)
+      console.log(showAddress.value.id)
+      // 点击确定后,关闭对话框
+      visibleDialog.value = false
+    }
+    // 打开对话框 逻辑
+    const openDialogFn = () => {
+      // 打开 对话框
+      visibleDialog.value = true
+      // document.body.parentNode.style.overflowY = 'auto'
+      // document.querySelector('.xtx-dialog').parent().css('overflow-y', 'auto')
+      // 清除上一次的内容,置空
+      selectedAddress.value = null
+    }
+    return { showAddress, visibleDialog, openDialogFn, confirmAddressFn, selectedAddress }
   }
 }
 </script>
 <style scoped lang="less">
+.xtx-dialog {
+  // max-height: 740px;
+  // min-height:550px;
+  // overflow: auto;
+  .text {
+    display: flex;
+    justify-content: space-between;
+    // flex: 1;
+    flex-basis: 230px;
+
+    min-height: 90px;
+    align-items: center;
+    &.item {
+      border: 1px solid #f5f5f5;
+      margin-bottom: 10px;
+      cursor: pointer;
+      &.active,&:hover {
+        border-color: @xtxColor;
+        background: lighten(@xtxColor,50%);
+      }
+      > ul {
+        padding: 10px;
+        font-size: 14px;
+        line-height: 30px;
+      }
+    }
+  }
+}
 .checkout-address {
   border: 1px solid #f5f5f5;
   display: flex;

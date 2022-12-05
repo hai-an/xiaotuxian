@@ -43,18 +43,24 @@ export default {
 <style scoped lang="less">
 .xtx-dialog {
   position: fixed;
+  overflow: auto;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   z-index: 8887;
+  padding-top: 50px;
   background: rgba(0,0,0,0);
   &.fade {
     transition: all 0.4s;
     background: rgba(0,0,0,.5);
   }
   .wrapper {
-    width: 600px;
+//     display: flex;
+//     align-items: stretch;
+// // justify-content: center;
+//     flex-direction:column;
+    width: 800px;
     background: #fff;
     border-radius: 4px;
     position: absolute;
@@ -68,8 +74,14 @@ export default {
       opacity: 1;
     }
     .body {
+      display: flex;
+      flex-wrap: wrap;
+      width: 800px;
+      justify-content: space-between;
       padding: 20px 40px;
       font-size: 16px;
+      // min-height: 400px;
+      overflow: auto;
       .icon-warning {
         color: @priceColor;
         margin-right: 3px;
@@ -81,12 +93,13 @@ export default {
       padding: 10px 0 30px 0;
     }
     .header {
-      position: relative;
+      position:relative;
       height: 70px;
       line-height: 70px;
-      padding: 0 20px;
+      padding: 20px 20px 0;
       border-bottom: 1px solid #f5f5f5;
       h3 {
+      height: 70px;
         font-weight: normal;
         font-size: 18px;
       }
