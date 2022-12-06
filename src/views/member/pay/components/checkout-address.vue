@@ -9,14 +9,14 @@
         <li><span>收货地址：</span>{{showAddress.fullLocation.replace(/ /g,'')+showAddress.address}}</li>
         <!-- replace(/ /g,'') 去空格 -->
       </ul>
-      <a href="javascript:;">修改地址</a>
+      <a @click="openAddressEdit(showAddress)"  v-if="showAddress" href="javascript:;">修改地址</a>
     </div>
     <div class="action">
       <XtxButton @click="openDialogFn()" class="btn">切换地址</XtxButton>
-      <XtxButton  @click="openAddressEdit()" class="btn">添加地址</XtxButton>
+      <XtxButton  @click="openAddressEdit({})" class="btn">添加地址</XtxButton>
     </div>
   </div>
-  <!-- 对话框组件----------------------------- -->
+  <!--切换(对话框)地址组件----------------------------- -->
   <XtxDialog title="切换收货地址" v-model:visible="visibleDialog">
     <div class="text item" v-for="item in list" :key="item.id"
     @click="()=>{selectedAddress=item,confirmAddressFn()}"
@@ -36,7 +36,7 @@
         <XtxButton @click="confirmAddressFn()" type="primary">确认</XtxButton>
       </template>
   </XtxDialog>
-  <!-- 添加地址 编辑组件 -->
+  <!-- 添加/编辑(对话框)地址组件 -->
   <AddressEdit ref="addressEdit" @submit-address="successHandler"></AddressEdit>
 </template>
 <script>
@@ -97,10 +97,11 @@ export default {
       selectedAddress.value = null
     }
 
-    // 添加收货地址组件 逻辑
+    // 添加/修改 收货地址组件 打开子组件对话框的方法
     const addressEdit = ref(null)
-    const openAddressEdit = () => {
-      addressEdit.value.openDialog()
+    const openAddressEdit = (from) => {
+      // 添加 {} ; 修改 { 数据 }
+      addressEdit.value.openDialog(from) // 传入当前显示的收货地址 formData
     }
 
     // 成功添加地址的回调
@@ -110,8 +111,23 @@ export default {
       // const jsonStr = JSON.stringify(formData)
       // props.list.unshift(JSON.parse(jsonStr))
       // 又因为list是props数据,修改数据用的都是同一条引用地址,需要用到 克隆
+      // props.list.unshift(JSON.parse(JSON.stringify(formData))) // 克隆
+
+      // 判断 修改/添加 地址 思想
+      // 在 list中找 传入的参数的id 与 item.id 是否相等,相等即不等于 -1,
+      const editAddress = props.list.find(item => item.id === formData.id)
+      console.log('editAddress', editAddress)
+
+      if (editAddress) {
+        // 修改地址
+        for (const key in editAddress) {
+          editAddress[key] = formData[key]
+        }
+      } else {
+        // 添加地址
       // eslint-disable-next-line vue/no-mutating-props
-      props.list.unshift(JSON.parse(JSON.stringify(formData))) // 克隆
+        props.list.unshift(JSON.parse(JSON.stringify(formData))) // 克隆
+      }
     }
 
     return {
