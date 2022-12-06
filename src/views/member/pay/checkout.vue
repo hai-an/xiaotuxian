@@ -71,7 +71,7 @@
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <XtxButton type="primary">提交订单</XtxButton>
+          <XtxButton @click="submitOrderFn" type="primary">提交订单</XtxButton>
         </div>
       </div>
     </div>
@@ -80,7 +80,9 @@
 <script>
 import { reactive, ref } from 'vue'
 import CheckoutAddress from './components/checkout-address'
-import { findCheckoutInfo } from '@/api/order'
+import { findCheckoutInfo, createOrder } from '@/api/order'
+import Message from '@/components/library/Message'
+import { useRouter } from 'vue-router'
 export default {
   name: 'XtxPayCheckoutPage',
   components: { CheckoutAddress },
@@ -89,17 +91,38 @@ export default {
   // 3.提倡:你发了自定义事件,需要在emits选项申明下,代码可读性更高!
   emits: ['change'],
   setup () {
+    // 结算功能 - 生成订单 - 默认信息
     const checkoutInfo = ref(null)
-    findCheckoutInfo().then(data => { checkoutInfo.value = data.result })
-    // 收货地址 ----  需要提交的字段
-    const requestParams = reactive({
-      addressId: null
+    findCheckoutInfo().then(data => {
+      checkoutInfo.value = data.result
+      // 获取 提交订单时的商品信息
+      requestParams.goods = checkoutInfo.value.goods.map(({ skuId, count }) => ({ skuId, count }))
     })
-    // 切换地址 逻辑
+    // 结算功能 - 提交订单 - 提交信息
+    const requestParams = reactive({
+      addressId: null, // 收货地址,切换收货地址或者组件默认的时候设置
+      deliveryTimeType: 1,
+      payType: 1,
+      buyerMessage: '',
+      goods: [] // 商品信息,获取订单信息后设置
+    })
+    // 接收收货地址id
     const changeAddress = (addressId) => {
       requestParams.addressId = addressId
     }
-    return { checkoutInfo, changeAddress }
+
+    // 提交订单
+    const router = useRouter()
+    const submitOrderFn = () => {
+      // 判断有无收货地址
+      if (!requestParams.addressId) {
+        return Message({ text: '亲,请设置收货地址后,再下单!' })
+      }
+      createOrder(requestParams).then(data => {
+        router.push({ path: '/member/pay', query: { id: data.result.id } })
+      })
+    }
+    return { checkoutInfo, changeAddress, submitOrderFn, requestParams }
   }
 }
 </script>
