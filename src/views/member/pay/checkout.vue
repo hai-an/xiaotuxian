@@ -10,7 +10,7 @@
         <!-- 收货地址 -->
         <h3 class="box-title">收货地址</h3>
         <div class="box-body">
-          <!-- 收货地址组件 -->
+          <!-- 切换收货地址组件 -->
           <CheckoutAddress @change="changeAddress" :list="checkoutInfo.userAddresses" />
         </div>
         <!-- 商品信息 -->
@@ -98,7 +98,6 @@ export default {
     // 切换地址 逻辑
     const changeAddress = (addressId) => {
       requestParams.addressId = addressId
-      console.log(addressId)
     }
     return { checkoutInfo, changeAddress }
   }

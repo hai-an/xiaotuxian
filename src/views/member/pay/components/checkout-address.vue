@@ -13,7 +13,7 @@
     </div>
     <div class="action">
       <XtxButton @click="openDialogFn()" class="btn">切换地址</XtxButton>
-      <XtxButton  class="btn">添加地址</XtxButton>
+      <XtxButton  @click="openAddressEdit()" class="btn">添加地址</XtxButton>
     </div>
   </div>
   <!-- 对话框组件----------------------------- -->
@@ -36,9 +36,12 @@
         <XtxButton @click="confirmAddressFn()" type="primary">确认</XtxButton>
       </template>
   </XtxDialog>
+  <!-- 添加地址 编辑组件 -->
+  <AddressEdit ref="addressEdit" @submit-address="successHandler"></AddressEdit>
 </template>
 <script>
 import { ref } from 'vue'
+import AddressEdit from './address-edit'
 export default {
   name: 'CheckoutAddress',
   props: {
@@ -46,6 +49,9 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  components: {
+    AddressEdit
   },
   emits: ['change'],
   setup (props, { emit }) {
@@ -67,7 +73,7 @@ export default {
     // 默认通知一个地址给父组件
     // emit('change', showAddress.value && showAddress.value.id)
     emit('change', showAddress.value?.id)
-    console.log(showAddress.value.id)
+    // console.log(showAddress.value.id)
 
     // 记录当前选中的 addressId
     const selectedAddress = ref(null)
@@ -77,10 +83,10 @@ export default {
       showAddress.value = selectedAddress.value
       // 通知父组件 更新id
       emit('change', showAddress.value?.id)
-      console.log(showAddress.value.id)
       // 点击确定后,关闭对话框
       visibleDialog.value = false
     }
+
     // 打开对话框 逻辑
     const openDialogFn = () => {
       // 打开 对话框
@@ -90,7 +96,34 @@ export default {
       // 清除上一次的内容,置空
       selectedAddress.value = null
     }
-    return { showAddress, visibleDialog, openDialogFn, confirmAddressFn, selectedAddress }
+
+    // 添加收货地址组件 逻辑
+    const addressEdit = ref(null)
+    const openAddressEdit = () => {
+      addressEdit.value.openDialog()
+    }
+
+    // 成功添加地址的回调
+    const successHandler = (formData) => {
+      // 如果是添加往 list 中 unshift 一条数据
+      // eslint-disable-next-line vue/no-mutating-props
+      // const jsonStr = JSON.stringify(formData)
+      // props.list.unshift(JSON.parse(jsonStr))
+      // 又因为list是props数据,修改数据用的都是同一条引用地址,需要用到 克隆
+      // eslint-disable-next-line vue/no-mutating-props
+      props.list.unshift(JSON.parse(JSON.stringify(formData))) // 克隆
+    }
+
+    return {
+      showAddress,
+      visibleDialog,
+      openDialogFn,
+      confirmAddressFn,
+      selectedAddress,
+      openAddressEdit,
+      addressEdit,
+      successHandler
+    }
   }
 }
 </script>
