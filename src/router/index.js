@@ -12,6 +12,8 @@ const Cart = () => import('@/views/cart/index')
 const PayCheckout = () => import('@/views/member/pay/checkout')
 const Pay = () => import('@/views/member/pay/index.vue')
 const PayResult = () => import('@/views/member/pay/result')
+const MemberLayout = () => import('@/views/member/Layout')
+const MemberHome = () => import('@/views/member/home')
 const routes = [
 // 一级路由
   {
@@ -25,7 +27,14 @@ const routes = [
       { path: '/cart', component: Cart },
       { path: '/member/checkout', component: PayCheckout },
       { path: '/member/pay', component: Pay },
-      { path: '/pay/callback', component: PayResult }
+      { path: '/pay/callback', component: PayResult },
+      {
+        path: '/member',
+        component: MemberLayout,
+        children: [
+          { path: '/member', component: MemberHome }
+        ]
+      }
     ]
   },
   { path: '/login', component: Login }, // 登录页面
