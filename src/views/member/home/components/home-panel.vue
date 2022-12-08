@@ -27,6 +27,11 @@ export default {
   padding: 0 20px;
   margin-top: 20px;
   height: 400px;
+  .goods-list {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+  }
   .header {
     height: 66px;
     border-bottom: 1px solid #f5f5f5;
