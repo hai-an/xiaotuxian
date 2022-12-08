@@ -36,3 +36,10 @@ export const createOrder = (order) => {
 export const findOrder = (id) => {
   return request('/member/order/' + id, 'get')
 }
+/**
+ * 获取订单支付状态
+ * @param {String} orderId - 订单ID
+ */
+export const findOrderDetail = (orderId) => {
+  return request(' /pay/aliPay/' + orderId, 'get')
+}

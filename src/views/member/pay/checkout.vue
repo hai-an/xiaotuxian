@@ -119,7 +119,9 @@ export default {
         return Message({ text: '亲,请设置收货地址后,再下单!' })
       }
       createOrder(requestParams).then(data => {
-        router.push({ path: '/member/pay', query: { id: data.result.id } })
+        Message({ text: '订单提交成功！请尽快完成支付!', type: 'success' })
+        // 跳转支付页面
+        router.push({ path: '/member/pay', query: { orderId: data.result.id } })
       })
     }
     return { checkoutInfo, changeAddress, submitOrderFn, requestParams }

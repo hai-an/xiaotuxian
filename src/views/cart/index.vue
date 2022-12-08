@@ -71,7 +71,8 @@
               </td>
               <td class="tc"><p>&yen;{{item.nowPrice}}</p></td>
               <td class="tc">{{item.count}}</td>
-              <td class="tc"><p>&yen;{{item.nowPrice*100*item.count/100}}</p></td>
+              <!-- nums.toString().split(".")[0]+'.'+nums.toString().split(".")[1].substring(0,2) -->
+              <td class="tc"><p>&yen;{{(item.nowPrice*100*item.count/100)}}</p></td>
               <td class="tc">
                 <p><a @click="deleteCart(item.skuId)" class="green" href="javascript:;">删除</a></p>
                 <p><a href="javascript:;">找相似</a></p>
@@ -90,8 +91,8 @@
           <a @click="batchDeleteCart(true)" href="javascript:;">清空失效商品</a>
         </div>
         <div class="total">
-          共 {{$store.getters['cart/selectedAmount']}} 件商品，已选择 {{$store.getters['cart/selectedTotal']}} 件，商品合计：
-          <span class="red">¥{{$store.getters['cart/selectedAmount']}}</span>
+          共 {{$store.getters['cart/validTotal']}} 件商品，已选择 {{$store.getters['cart/selectedTotal']}} 件，商品合计：
+          <span class="red">¥{{$store.getters['cart/selectedAmount'].toFixed(2)}}</span>
           <XtxButton @click="checkOut" type="primary">下单结算</XtxButton>
         </div>
       </div>

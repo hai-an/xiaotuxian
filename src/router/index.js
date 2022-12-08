@@ -10,7 +10,8 @@ const Login = () => import('@/views/login/index') // 登录页面
 const LoginCallback = () => import('@/views/login/callback') // 登录重定向
 const Cart = () => import('@/views/cart/index')
 const PayCheckout = () => import('@/views/member/pay/checkout')
-const Pay = () => import('@/views/member/pay')
+const Pay = () => import('@/views/member/pay/index.vue')
+const PayResult = () => import('@/views/member/pay/result')
 const routes = [
 // 一级路由
   {
@@ -20,14 +21,16 @@ const routes = [
       { path: '/', component: Home },
       { path: '/category/:id', component: TopCategory },
       { path: '/category/sub/:id', component: SubCategory },
-      { path: '/product/:id', component: Goods }
+      { path: '/product/:id', component: Goods },
+      { path: '/cart', component: Cart },
+      { path: '/member/checkout', component: PayCheckout },
+      { path: '/member/pay', component: Pay },
+      { path: '/pay/callback', component: PayResult }
     ]
   },
   { path: '/login', component: Login }, // 登录页面
-  { path: '/login/callback', component: LoginCallback }, // 登录重定向
-  { path: '/cart', component: Cart },
-  { path: '/member/checkout', component: PayCheckout },
-  { path: '/member/pay', component: Pay }
+  { path: '/login/callback', component: LoginCallback } // 登录重定向
+
 ]
 
 // 创建路由实例

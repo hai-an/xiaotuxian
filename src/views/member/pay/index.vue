@@ -25,7 +25,7 @@
         <div class="item">
           <p>支付平台</p>
           <a class="btn wx" href="javascript:;"></a>
-          <a class="btn alipay" href="javascript:;"></a>
+          <a @click="visiblePay = true" class="btn alipay" :href="payUrl" target="_blank" ></a>
         </div>
         <div class="item">
           <p>支付方式</p>
@@ -37,6 +37,18 @@
         </div>
       </div>
     </div>
+    <!-- 支付页加载对话框 -->
+    <XtxDialog title="正在支付..." v-model:visible="visiblePay">
+     <div class="pay-wait">
+       <img src="@/assets/images/load.gif" alt="">
+       <div v-if="order">
+           <p>如果支付成功：</p>
+           <RouterLink :to="`/member/order/${$route.query.orderId}`">查看订单详情></RouterLink>
+           <p>如果支付失败：</p>
+           <RouterLink to="/">查看相关疑问></RouterLink>
+       </div>
+     </div>
+   </XtxDialog>
   </div>
 </template>
 <script>
@@ -44,26 +56,52 @@ import { findOrder } from '@/api/order'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePayTime } from '@/hook'
+import { baseURL } from '@/utils/request'
 export default {
   name: 'XtxPayPage',
   setup () {
     // 根据地址栏id发起请求,获取订单信息
     const order = ref(null)
     const route = useRoute()
-    findOrder(route.query.id).then(data => {
+    console.log('route.query.orderId', route.query.orderId)
+    findOrder(route.query.orderId).then(data => {
       order.value = data.result
+      console.log(data)
       // countdown 后台返回的倒计时
       if (data.result.countdown >= -1) {
         start(data.result.countdown)
       }
     })
+    // 支付倒计时工具函数
     const { countTimeText, start } = usePayTime()
-
-    return { order, countTimeText }
+    // 支付地址
+    // const payUrl = '后台服务基准地址+支付页面地址+订单ID+回跳地址'
+    const redirect = encodeURIComponent('http://www.corho.com:8080/#/pay/callback')
+    const payUrl = `${baseURL}/pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`
+    // 支付页面对话框 显示
+    const visiblePay = ref(false)
+    return { order, countTimeText, payUrl, visiblePay }
   }
 }
 </script>
+
 <style scoped lang="less">
+:deep(.xtx-dialog .wrapper[data-v-348ec49d]){
+  width: 600px;
+}
+.pay-wait {
+  display: flex;
+  width: 500px;
+  // justify-content: space-around;
+  justify-content: space-between;
+  p {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+  a {
+    color: @xtxColor;
+  }
+}
 .pay-info {
   background: #fff;
   display: flex;

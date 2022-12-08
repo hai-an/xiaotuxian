@@ -241,7 +241,7 @@ export default {
     },
     // 无效商品列表
     invalidList (state) {
-      return state.list.filter(item => item.stock <= 0 && !item.isEffective)
+      return state.list.filter(item => item.stock < 1 || !item.isEffective)
     },
     // 已选商品列表
     selectedList (state, getters) {
