@@ -1,16 +1,30 @@
 <template>
   <div class="member-order">
-    <router-link to="/member/order/1001">商品1</router-link>
-    <router-link to="/member/order/1002">商品2</router-link>
+    MemberOrder
+    <!-- 体验jsx语法 -->
+    <XtxTabs v-model="activeName" @tabClick="changeTab">
+    <XtxTabsPanel v-for="item in orderStatus" :key="item.name" :label="item.label" :name="item.name">{{item.label}}</XtxTabsPanel>
+    </XtxTabs>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
+import { orderStatus } from '@/api/constants'
 export default {
-  name: 'MemberIndex'
+  name: 'MemberOrder',
+  setup () {
+    const activeName = ref('all')
+    console.log(activeName)
+    // 点击tab 获取数据用
+    const changeTab = (active) => {
+      console.log(active)
+    }
+    return { activeName, changeTab, orderStatus }
+  }
 }
 </script>
 
-<style>
+<style scoped lang="less">
 
 </style>
