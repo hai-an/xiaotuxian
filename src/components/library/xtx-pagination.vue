@@ -2,9 +2,9 @@
   <div class="xtx-pagination" v-if="total>0">
     <a @click="changePage(myCurrentPage-1)" v-if="myCurrentPage > 1" href="javascript:;">上一页</a>
     <a v-else href="javascript:;" class="disabled">上一页</a>
-    <span v-if="myCurrentPage > 1">...</span>
+    <span v-if="(myCurrentPage > 3)">...</span>
     <a @click="changePage(i)" v-for="i in pager.btnArr" :key="i" href="javascript:;" :class="{active:myCurrentPage===i}">{{i}}</a>
-    <span v-if="myCurrentPage < pager.pageCount">...</span>
+    <span v-if="(myCurrentPage < pager.pageCount-2)">...</span>
     <a @click="changePage(myCurrentPage+1)" v-if="myCurrentPage < pager.pageCount" href="javascript:;">下一页</a>
     <a v-else href="javascript:;" class="disabled">下一页</a>
   </div>
@@ -32,7 +32,7 @@ export default {
     // 1.按钮个数 5个
     const btnCount = 5
     // 2.当前显示的页码
-    const myCurrentPage = ref(10)
+    const myCurrentPage = ref(2)
     // 3.总页数  = 总条数 / 每一页条数 向上取整
     const myTotal = ref(100)
     const myPageSize = ref(10)
