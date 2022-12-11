@@ -7,7 +7,7 @@
             <i class="iconfont icon-down-time"></i>
             <b>付款截止：{{ order.countdown === -1? '已超时': countTimeText}}</b>
           </span>
-          <a href="javascript:;" class="del" v-if="[5,6].includes(order.orderState)">删除</a>
+          <a  @click="$emit('on-delete', order)" href="javascript:;" class="del" v-if="[5,6].includes(order.orderState)">删除</a>
         </div>
         <div class="body">
           <div class="column goods">
@@ -71,7 +71,7 @@ export default {
       default: () => ({})
     }
   },
-  emits: ['on-cancel'],
+  emits: ['on-cancel', 'on-delete'],
   setup (props) {
     const { countTimeText, start } = usePayTime()
     start(props.order.countdown)
