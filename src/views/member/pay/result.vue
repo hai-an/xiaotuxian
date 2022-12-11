@@ -16,8 +16,8 @@
         <p>支付方式：<span>微信支付</span></p>
         <p>支付金额：<span v-if="order">¥{{order.payMoney}}</span></p>
         <div class="btn">
-          <XtxButton type="primary" style="margin-right:20px">查看订单</XtxButton>
-          <XtxButton type="gray">进入首页</XtxButton>
+          <XtxButton @click="$router.push('/member/order')" type="primary" style="margin-right:20px">查看订单</XtxButton>
+          <XtxButton @click="$router.push('/')" type="gray">进入首页</XtxButton>
         </div>
         <p class="alert">
           <span class="iconfont icon-tip"></span>
@@ -40,6 +40,8 @@ export default {
     findOrder(route.query.orderId).then(data => {
       order.value = data.result
     })
+    console.log('order------------', order)
+
     return { order }
   }
 }

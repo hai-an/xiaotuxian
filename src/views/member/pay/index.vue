@@ -77,7 +77,7 @@ export default {
     // 支付地址
     // const payUrl = '后台服务基准地址+支付页面地址+订单ID+回跳地址'
     const redirect = encodeURIComponent('http://www.corho.com:8080/#/pay/callback')
-    const payUrl = `${baseURL}/pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`
+    const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`
     // 支付页面对话框 显示
     const visiblePay = ref(false)
     return { order, countTimeText, payUrl, visiblePay }

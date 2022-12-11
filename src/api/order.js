@@ -37,9 +37,19 @@ export const findOrder = (id) => {
   return request('/member/order/' + id, 'get')
 }
 /**
- * 获取订单支付状态
- * @param {String} orderId - 订单ID
+ * 获取我的订单列表
+ * @param {integer} page - 页码
+ * @param {integer} pageSize - 页尺寸
+ * @param {integer} orderState - 订单状态，1为待付款、2为待发货、3为待收货、4为待评价、5为已完成、6为已取消，未传该参数或0为全部
  */
-export const findOrderDetail = (orderId) => {
-  return request(' /pay/aliPay/' + orderId, 'get')
+export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
+  return request('/member/order', 'get', { page, pageSize, orderState })
+}
+
+/**
+ * 已付款 模拟发货
+ * @param {number} id - 订单ID
+ */
+export const simulateShipment = (id) => {
+  return request('/member/order/consignment/' + id, 'get')
 }

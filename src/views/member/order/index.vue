@@ -1,121 +1,93 @@
 <template>
   <div class="member-order">
-    MemberOrder
     <!-- 体验jsx语法 -->
     <!-- tab 组件 -->
     <XtxTabs v-model="activeName" @tabClick="changeTab">
-    <XtxTabsPanel v-for="item in orderStatus" :key="item.name" :label="item.label" :name="item.name">{{item.label}}</XtxTabsPanel>
-    </XtxTabs>
+      <XtxTabsPanel v-for="item in orderStatus" :key="item.name" :label="item.label" :name="item.name"></XtxTabsPanel>
+      </XtxTabs>
     <!-- 订单列表 -->
-    <div class="order-list">
-      <div class="order-item">
-        <div class="head">
-          <span>下单时间：2018-01-08 15:02:00</span>
-          <span>订单编号：62205697599</span>
-          <span class="down-time">
-            <i class="iconfont icon-down-time"></i>
-            <b>付款截止：28分20秒</b>
-          </span>
-        </div>
-        <div class="body">
-          <div class="column goods">
-            <ul>
-              <li v-for="i in 2" :key="i">
-                <a class="image" href="javascript:;">
-                  <img src="https://yanxuan-item.nosdn.127.net/f7a4f643e245d03771d6f12c94e71214.png" alt="" />
-                </a>
-                <div class="info">
-                  <p class="name ellipsis-2">原创设计一体化机身,精致迷你破壁机350mL</p>
-                  <p class="attr ellipsis">
-                    <span>颜色：绿色</span>
-                    <span>尺寸：10寸</span>
-                  </p>
-                </div>
-                <div class="price">¥9.50</div>
-                <div class="count">x1</div>
-              </li>
-            </ul>
-          </div>
-          <div class="column state">
-            <p>待付款</p>
-          </div>
-          <div class="column amount">
-            <p class="red">¥19.00</p>
-            <p>（含运费：¥10.00）</p>
-            <p>在线支付</p>
-          </div>
-          <div class="column action">
-            <XtxButton type="primary" size="small">立即付款</XtxButton>
-            <p><a href="javascript:;">查看详情</a></p>
-            <p><a href="javascript:;">取消订单</a></p>
-          </div>
-        </div>
-      </div>
-      <div class="order-item">
-        <div class="head">
-          <span>下单时间：2018-01-08 15:02:00</span>
-          <span>订单编号：62205697599</span>
-          <a href="javascript:;" class="del">删除</a>
-        </div>
-        <div class="body">
-          <div class="column goods">
-            <ul>
-              <li>
-                <a class="image" href="javascript:;">
-                  <img src="https://yanxuan-item.nosdn.127.net/f7a4f643e245d03771d6f12c94e71214.png" alt="" />
-                </a>
-                <div class="info">
-                  <p class="name ellipsis-2">原创设计一体化机身,精致迷你破壁机350mL</p>
-                  <p class="attr ellipsis">
-                    <span>颜色：绿色</span>
-                    <span>尺寸：10寸</span>
-                  </p>
-                </div>
-                <div class="price">¥9.50</div>
-                <div class="count">x1</div>
-              </li>
-            </ul>
-          </div>
-          <div class="column state">
-            <p>已取消</p>
-          </div>
-          <div class="column amount">
-            <p class="red">¥9.50</p>
-            <p>（含运费：¥0.00）</p>
-          </div>
-          <div class="column action">
-            <p><a href="javascript:;">查看详情</a></p>
-          </div>
-        </div>
-      </div>
+    <div class="order-list" v-if="orderList">
+      <div  v-if="loading" class="loading"></div>
+      <div class="none" v-if="!(loading || orderList.length)">暂无数据</div>
+      <OrderItem v-for="goods in orderList" :key="goods.id" :order="goods"></OrderItem>
     </div>
     <!-- 分页组件 -->
-    <xtx-pagination></xtx-pagination>
+    <xtx-pagination
+    v-if="(orderList&&orderList.length)"
+    :total="orderParams.counts"
+    :currentPage="orderParams.page"
+    :pageSize="orderParams.pageSize"
+    @current-change="()=>orderParams.page=$event"
+    ></xtx-pagination>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { orderStatus } from '@/api/constants'
+import OrderItem from './components/order-item'
+import { findOrderList } from '@/api/order'
 export default {
   name: 'MemberOrder',
+  components: { OrderItem },
   setup () {
     const activeName = ref('all')
-    console.log(activeName)
-    // 点击tab 获取数据用
-    const changeTab = (active) => {
-      console.log(active)
+    // 查询订单参数
+    const orderParams = reactive({
+      page: 1,
+      pageSize: 5,
+      orderState: 0
+    })
+    // 订单列表
+    const orderList = ref([])
+    // 加载状态
+    const loading = ref(false)
+    // 监听 orderParams改变 ,发送数据请求 获取查询订单,立即执行=>初始化数据
+    watch(orderParams, () => {
+      loading.value = true
+      // 查询订单
+      findOrderList(orderParams).then(data => {
+        orderList.value = data.result.items
+        console.log(orderList.value.length)
+      })
+      loading.value = false
+    }, { immediate: true })
+
+    // 点击tab => 获取对应的索引 => 发送数据请求
+    const changeTab = ({ index }) => {
+      // 需求:  1. 重置 页码为1,
+      //       2.订单状态 = index
+      // 清空数据
+      orderParams.page = 1
+      orderParams.orderState = index
     }
-    return { activeName, changeTab, orderStatus }
+    return { activeName, changeTab, orderStatus, orderList, loading, orderParams }
   }
 }
 </script>
 
 <style scoped lang="less">
 .order-list {
-  background: #fff;
   padding: 20px;
+  position: relative;
+  min-height: 400px;
+
 }
+
+.none {
+    height: 400px;
+    text-align: center;
+    line-height: 400px;
+    color: #999;
+  }
+.loading {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(255,255,255,.9) url(../../../assets/images/loading.gif) no-repeat center;
+  }
 .order-item {
   margin-bottom: 20px;
   border: 1px solid #f5f5f5;
