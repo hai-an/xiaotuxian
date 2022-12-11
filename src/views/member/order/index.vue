@@ -23,7 +23,7 @@
     :total="orderParams.counts"
     :currentPage="orderParams.page"
     :pageSize="orderParams.pageSize"
-    @current-change="()=>orderParams.page=$event"
+    @current-change="orderParams.page=$event"
     ></xtx-pagination>
     <!-- 对于像：对话框，消息提示，确认提示，通知组件 适合使用传送门 Teleport -->
     <!-- <Teleport to="#dailog"> -->
