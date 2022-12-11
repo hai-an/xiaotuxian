@@ -9,7 +9,7 @@
     <div class="order-list" v-if="orderList">
       <div  v-if="loading" class="loading"></div>
       <div class="none" v-if="!(loading || orderList.length)">暂无数据</div>
-      <OrderItem v-for="goods in orderList" :key="goods.id" :order="goods"></OrderItem>
+      <OrderItem @on-cancel="cancelOrder" v-for="goods in orderList" :key="goods.id" :order="goods"></OrderItem>
     </div>
     <!-- 分页组件 -->
     <xtx-pagination
@@ -19,6 +19,10 @@
     :pageSize="orderParams.pageSize"
     @current-change="()=>orderParams.page=$event"
     ></xtx-pagination>
+    <!-- 对于像：对话框，消息提示，确认提示，通知组件 适合使用传送门 Teleport -->
+    <!-- <Teleport to="#dailog"> -->
+      <OrderCancel ref="orderCancelCom" />
+    <!-- </Teleport> -->
   </div>
 </template>
 
@@ -26,10 +30,11 @@
 import { ref, reactive, watch } from 'vue'
 import { orderStatus } from '@/api/constants'
 import OrderItem from './components/order-item'
+import OrderCancel from './components/order-cancel.vue'
 import { findOrderList } from '@/api/order'
 export default {
   name: 'MemberOrder',
-  components: { OrderItem },
+  components: { OrderItem, OrderCancel },
   setup () {
     const activeName = ref('all')
     // 查询订单参数
@@ -61,8 +66,22 @@ export default {
       orderParams.page = 1
       orderParams.orderState = index
     }
-    return { activeName, changeTab, orderStatus, orderList, loading, orderParams }
+
+    const onCancelOrder = (item) => {
+
+    }
+    return { activeName, changeTab, orderStatus, orderList, loading, orderParams, onCancelOrder, ...useCancelOrder() }
   }
+}
+// 封装 取消订单逻辑
+const useCancelOrder = () => {
+  // 操作的 元素
+  const orderCancelCom = ref(null)
+  const cancelOrder = (item) => {
+    // item 是要 取消的订单
+    orderCancelCom.value.open(item)
+  }
+  return { cancelOrder, orderCancelCom }
 }
 </script>
 

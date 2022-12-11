@@ -53,3 +53,13 @@ export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
 export const simulateShipment = (id) => {
   return request('/member/order/consignment/' + id, 'get')
 }
+
+/**
+ * 取消订单
+ * @param {String} orderId - 订单ID
+ * @param {String} cancelReason - 取消原因
+ * @returns Promise
+ */
+export const cancelOrder = ({ orderId, cancelReason }) => {
+  return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
+}
