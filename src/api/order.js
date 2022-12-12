@@ -48,6 +48,7 @@ export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
 
 /**
  * 已付款 模拟发货
+ * http://pcapi-xiaotuxian-front-devtest.itheima.net/member/order/consignment/
  * @param {number} id - 订单ID
  */
 export const simulateShipment = (id) => {
@@ -70,4 +71,20 @@ export const cancelOrder = ({ orderId, cancelReason }) => {
  */
 export const delteOrder = (ids) => {
   return request('/member/order', 'delete', { ids })
+}
+/**
+ * 订单确认收货
+ * @param {string} id - 订单id
+ * @returns
+ */
+export const confirmOrder = (id) => {
+  return request(`/member/order/${id}/receipt`, 'put')
+}
+/**
+ * 查看物流
+ * @param {String} id - 订单ID
+ * @returns
+ */
+export const logisticsOrder = (id) => {
+  return request(`/member/order/${id}/logistics`, 'get')
 }

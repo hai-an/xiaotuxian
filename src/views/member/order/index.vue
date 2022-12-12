@@ -10,25 +10,32 @@
       <div  v-if="loading" class="loading"></div>
       <div class="none" v-if="!(loading || orderList.length)">暂无数据</div>
       <OrderItem
-        @on-cancel="cancelOrder"
+        @on-cancel="handleOrder"
+        @on-delete="handleDelete"
+        @on-confirm="handleConfirm"
+        @on-logistics="handleLogistics"
         v-for="goods in orderList"
         :key="goods.id"
         :order="goods"
-        @on-delete="handleDelete"
       ></OrderItem>
     </div>
     <!-- 分页组件 -->
     <xtx-pagination
-    v-if="(orderList&&orderList.length)"
+    v-if="orderList&&orderList.length"
     :total="orderParams.counts"
     :currentPage="orderParams.page"
     :pageSize="orderParams.pageSize"
     @current-change="orderParams.page=$event"
     ></xtx-pagination>
+    <!-- 取消订单 对话框 -->
     <!-- 对于像：对话框，消息提示，确认提示，通知组件 适合使用传送门 Teleport -->
-    <!-- <Teleport to="#dailog"> -->
+     <Teleport to="#dailog"> -->
       <OrderCancel ref="orderCancelCom" />
-    <!-- </Teleport> -->
+     </Teleport>
+    <!-- 查看物流 对话框 -->
+    <Teleport to="#dailog"> -->
+      <OrderLogistics ref="orderLogisticsCom" />
+     </Teleport>
   </div>
 </template>
 
@@ -37,12 +44,13 @@ import { ref, reactive, watch } from 'vue'
 import { orderStatus } from '@/api/constants'
 import OrderItem from './components/order-item'
 import OrderCancel from './components/order-cancel.vue'
-import { findOrderList, delteOrder } from '@/api/order'
+import { findOrderList, delteOrder, confirmOrder } from '@/api/order'
 import Confirm from '@/components/library/Confirm'
 import Message from '@/components/library/Message'
+import OrderLogistics from './components/order-logistics.vue'
 export default {
   name: 'MemberOrder',
-  components: { OrderItem, OrderCancel },
+  components: { OrderItem, OrderCancel, OrderLogistics },
   setup () {
     const activeName = ref('all')
     // 查询订单参数
@@ -77,26 +85,62 @@ export default {
       // 清空数据
       orderParams.page = 1
       orderParams.orderState = index
+      // 分页组件 的页码也归 1
     }
     // 删除 订单
     const handleDelete = (order) => {
       Confirm('亲,你确认要删除该订单吗?').then(() => {
         delteOrder([order.id])
+        getOrderList()
         Message({ type: 'success', text: '删除成功!' })
       }).catch(() => {})
     }
-    return { activeName, changeTab, orderStatus, orderList, loading, orderParams, ...useCancelOrder(), handleDelete }
+    return {
+      activeName,
+      changeTab,
+      orderStatus,
+      orderList,
+      loading,
+      orderParams,
+      ...useCancelOrder(),
+      handleDelete,
+      ...useConfirmOrder(),
+      ...useLogisticsOrder()
+    }
   }
 }
 // 封装 取消订单逻辑
 const useCancelOrder = () => {
   // 操作的 元素
   const orderCancelCom = ref(null)
-  const cancelOrder = (item) => {
-    // item 是要 取消的订单
-    orderCancelCom.value.open(item)
+  const handleOrder = (order) => {
+    // order 是要 取消的订单
+    orderCancelCom.value.open(order)
   }
-  return { cancelOrder, orderCancelCom }
+  return { handleOrder, orderCancelCom }
+}
+// 封装 确认收货 逻辑
+const useConfirmOrder = () => {
+  const handleConfirm = (order) => {
+    Confirm('亲,你确认收货吗?确认之后,钱将打到给商家账户').then(() => {
+      confirmOrder(order.id).then(data => {
+        Message({ type: 'success', text: '收货成功' })
+        // 改变 订单状态 确认收货 3 =>待评价 4
+        order.orderState = 4
+      })
+    }).catch(() => {})
+  }
+  return { handleConfirm }
+}
+
+// 封装 查看物流 逻辑
+const useLogisticsOrder = () => {
+  const orderLogisticsCom = ref(null)
+  const handleLogistics = (order) => {
+    // order 是要 查看的订单
+    orderLogisticsCom.value.open(order)
+  }
+  return { handleLogistics, orderLogisticsCom }
 }
 </script>
 

@@ -13,7 +13,7 @@
           <div class="column goods">
             <ul>
               <li v-for="goods in order.skus" :key="goods.id">
-                <RouterLink class="image" to="`/product/${goods.id}`">
+                <RouterLink class="image" :to="`/member/order/${goods.id}`">
                   <img :src="goods.image" alt="" />
                 </RouterLink>
                 <div class="info">
@@ -32,8 +32,8 @@
             <!-- 待收货 查看物流 -->
             <!-- 待评价 评价商品 -->
             <!-- 已完成 查看评价 -->
-            <p><a v-if="(order.orderState==3)" href="javascript:;" class="green">查看详情</a></p>
-            <p><a v-if="(order.orderState==4)" href="javascript:;" class="green">查看详情</a></p>
+            <p><a @click="$emit('on-logistics', order)" v-if="(order.orderState==3)" href="javascript:;" class="green">查看物流</a></p>
+            <p><a v-if="(order.orderState==4)" href="javascript:;" class="green">评价商品</a></p>
             <p><a v-if="(order.orderState==5)" href="javascript:;" class="green">查看评价</a></p>
           </div>
           <div class="column amount">
@@ -49,7 +49,7 @@
         <!-- 5已完成：查看详情，再次购买，申请售后 -->
         <!-- 6已取消：查看详情 -->
             <XtxButton @click="$router.push(`/member/pay?orderId=${order.id}`)" v-if="(order.orderState===1)"  type="primary" size="small">立即付款</XtxButton>
-            <XtxButton  v-if="(order.orderState===3)"  type="primary" size="small">确认收货</XtxButton>
+            <XtxButton @click="$emit('on-confirm',order)"  v-if="(order.orderState===3)"  type="primary" size="small">确认收货</XtxButton>
             <p><a @click="$router.push(`/member/order/${order.id}`)" href="javascript:;">查看详情</a></p>
             <p @click="$emit('on-cancel', order)" v-if="(order.orderState===1)"><a href="javascript:;">取消订单</a></p>
             <p v-if="[2,3,4,5].includes(order.orderState)"><a href="javascript:;">再次购买</a></p>
@@ -71,7 +71,7 @@ export default {
       default: () => ({})
     }
   },
-  emits: ['on-cancel', 'on-delete'],
+  emits: ['on-cancel', 'on-delete', 'on-confirm', 'on-logistics'],
   setup (props) {
     const { countTimeText, start } = usePayTime()
     start(props.order.countdown)
