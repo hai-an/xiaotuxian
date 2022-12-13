@@ -134,7 +134,7 @@ const useConfirmOrder = () => {
 }
 
 // 封装 查看物流 逻辑
-const useLogisticsOrder = () => {
+export const useLogisticsOrder = () => {
   const orderLogisticsCom = ref(null)
   const handleLogistics = (order) => {
     // order 是要 查看的订单
