@@ -3,6 +3,7 @@
     <!-- 操作栏 -->
     <DetailAction :order="order" />
     <!-- 步骤条 组件xtx-steps.vue-->
+    <DetailSteps :order="order" />
     <!-- 物流栏 -->
     <!-- 订单商品信息 -->
   </div>
@@ -12,9 +13,10 @@ import { findOrder } from '@/api/order'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import DetailAction from './components/detail-action'
+import DetailSteps from './components/detail-steps'
 export default {
   name: 'OrderDetailPage',
-  components: { DetailAction },
+  components: { DetailAction, DetailSteps },
   setup () {
     // 当前订单
     const order = ref(null)

@@ -17,7 +17,7 @@
            6.已取消：- -->
      <!-- 待付款 -->
      <template v-if="order.orderState === 1">
-        <XtxButton @click="$router.push('/member/pay?id='+order.id)" type="primary" size="small">立即付款</XtxButton>
+        <XtxButton @click="$router.push('/member/pay?orderId='+order.id)" type="primary" size="small">立即付款</XtxButton>
         <XtxButton type="gray" size="small">取消订单</XtxButton>
       </template>
       <!-- 待发货 -->

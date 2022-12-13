@@ -65,8 +65,11 @@ export default {
     const route = useRoute()
     console.log('route.query.orderId', route.query.orderId)
     findOrder(route.query.orderId).then(data => {
+      console.log('route.query.orderId', route.query.orderId)
+      console.log(data.result)
       order.value = data.result
-      console.log(data)
+      console.log('order', order.value.payMoney)
+
       // countdown 后台返回的倒计时
       if (data.result.countdown >= -1) {
         start(data.result.countdown)
