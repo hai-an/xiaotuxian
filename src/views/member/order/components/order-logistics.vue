@@ -1,5 +1,5 @@
 <template>
-  <XtxDialog v-model:visible="visibleDialog" title="查看物流">
+  <XtxDialog v-if="logistics" v-model:visible="visibleDialog" title="查看物流">
     <div class="order-logistics-goods" v-if="logistics">
       <a class="image" href="javascript:;"
         ><img :src="logistics.picture" alt="" />

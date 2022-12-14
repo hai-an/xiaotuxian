@@ -125,7 +125,7 @@ const useConfirmOrder = () => {
     Confirm('亲,你确认收货吗?确认之后,钱将打到给商家账户').then(() => {
       confirmOrder(order.id).then(data => {
         Message({ type: 'success', text: '收货成功' })
-        // 改变 订单状态 确认收货 3 =>待评价 4
+        // 改变 订单状态 待收货 3 =>待评价 4
         order.orderState = 4
       })
     }).catch(() => {})

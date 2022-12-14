@@ -8,7 +8,7 @@
     <Suspense v-if="[3,4,5].includes(order.orderState)">
       <!-- 组件加载完毕(数据已接收成功) -->
       <template #default>
-        <DetailLogistics  :order="order" />
+        <DetailLogistics :order="order" />
       </template>
       <!-- 组件加载中(等待中) -->
       <template #fallback>
@@ -16,6 +16,7 @@
       </template>
     </Suspense>
     <!-- 订单商品信息 -->
+    <DetailInfo :order="order" />
   </div>
 </template>
 <script>
@@ -25,9 +26,10 @@ import { ref } from 'vue'
 import DetailAction from './components/detail-action'
 import DetailSteps from './components/detail-steps'
 import DetailLogistics from './components/detail-logistics.vue'
+import DetailInfo from './components/detail-info.vue'
 export default {
   name: 'OrderDetailPage',
-  components: { DetailAction, DetailSteps, DetailLogistics },
+  components: { DetailAction, DetailSteps, DetailLogistics, DetailInfo },
   setup () {
     // 当前订单
     const order = ref(null)
