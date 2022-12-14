@@ -29,11 +29,11 @@
     ></xtx-pagination>
     <!-- 取消订单 对话框 -->
     <!-- 对于像：对话框，消息提示，确认提示，通知组件 适合使用传送门 Teleport -->
-     <Teleport to="#dailog"> -->
+     <Teleport to="#dailog">
       <OrderCancel ref="orderCancelCom" />
      </Teleport>
     <!-- 查看物流 对话框 -->
-    <Teleport to="#dailog"> -->
+    <Teleport to="#dailog">
       <OrderLogistics ref="orderLogisticsCom" />
      </Teleport>
   </div>
@@ -110,7 +110,7 @@ export default {
   }
 }
 // 封装 取消订单逻辑
-const useCancelOrder = () => {
+export const useCancelOrder = () => {
   // 操作的 元素
   const orderCancelCom = ref(null)
   const handleOrder = (order) => {
