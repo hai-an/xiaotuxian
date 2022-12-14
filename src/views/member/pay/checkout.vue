@@ -80,9 +80,9 @@
 <script>
 import { reactive, ref } from 'vue'
 import CheckoutAddress from './components/checkout-address'
-import { findCheckoutInfo, createOrder } from '@/api/order'
+import { findCheckoutInfo, createOrder, findOrderRepurchase } from '@/api/order'
 import Message from '@/components/library/Message'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 export default {
   name: 'XtxPayCheckoutPage',
   components: { CheckoutAddress },
@@ -91,13 +91,24 @@ export default {
   // 3.提倡:你发了自定义事件,需要在emits选项申明下,代码可读性更高!
   emits: ['change'],
   setup () {
-    // 结算功能 - 生成订单 - 默认信息
     const checkoutInfo = ref(null)
-    findCheckoutInfo().then(data => {
-      checkoutInfo.value = data.result
-      // 获取 提交订单时的商品信息
-      requestParams.goods = checkoutInfo.value.goods.map(({ skuId, count }) => ({ skuId, count }))
-    })
+    const route = useRoute()
+    if (route.query.orderId) {
+      // 结算功能 - 生成订单 - 订单页(传id)
+      findOrderRepurchase(route.query.orderId).then(data => {
+        checkoutInfo.value = data.result
+        // 设置订单商品数据
+        requestParams.goods = checkoutInfo.value.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    } else {
+      // 结算功能 - 生成订单 - 购物车(不传id)
+      findCheckoutInfo().then(data => {
+        checkoutInfo.value = data.result
+        // 获取 提交订单时的商品信息
+        requestParams.goods = checkoutInfo.value.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    }
+
     // 结算功能 - 提交订单 - 提交信息
     const requestParams = reactive({
       addressId: null, // 收货地址,切换收货地址或者组件默认的时候设置
