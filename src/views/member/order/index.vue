@@ -120,7 +120,7 @@ export const useCancelOrder = () => {
   return { handleOrder, orderCancelCom }
 }
 // 封装 确认收货 逻辑
-const useConfirmOrder = () => {
+export const useConfirmOrder = () => {
   const handleConfirm = (order) => {
     Confirm('亲,你确认收货吗?确认之后,钱将打到给商家账户').then(() => {
       confirmOrder(order.id).then(data => {
