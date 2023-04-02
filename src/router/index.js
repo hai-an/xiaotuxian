@@ -17,7 +17,7 @@ const routes = [
       { path: '/pay/callback', component: () => import('@/views/member/pay/result.vue') },
       {
         path: '/member',
-        component: () => import('@/views/member/Layout.vue'),
+        component: (resolve) => require(['@/viewsmember/Layout.vue'], resolve),
         children: [
           { path: '/member', component: () => import('@/views/member/home/index.vue') }, // 个人中心
           // { path: '/member/order', component: MemberOrder }
